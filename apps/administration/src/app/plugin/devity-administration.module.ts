@@ -5,8 +5,9 @@ import { RouterModule } from '@angular/router';
 import { CoreModule, hookNavigator, hookRoute } from '@c8y/ngx-components';
 import { FormlyModule } from '@ngx-formly/core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { DevityAdminComponent } from './components/admin/admin.component';
-import { ADMIN_PATH } from '../../../../../src/models/app-admin.model';
+import { ADMIN_PKI_PROVIDER_PATH } from '../../../../../src/models/app-admin.model';
+import { DevityAdminPKIProviderModalComponent } from './components/admin-pki-provider-modal/admin-pki-provider-modal.component';
+import { DevityPKIProviderComponent } from './components/pki-provider/pki-provider.component';
 
 @NgModule({
   imports: [
@@ -17,17 +18,21 @@ import { ADMIN_PATH } from '../../../../../src/models/app-admin.model';
     FormlyModule.forChild(),
     CollapseModule,
   ],
-  declarations: [DevityAdminComponent],
+  declarations: [
+    DevityPKIProviderComponent,
+    DevityAdminPKIProviderModalComponent,
+  ],
   providers: [
     hookRoute({
-      path: ADMIN_PATH,
-      component: DevityAdminComponent,
+      path: ADMIN_PKI_PROVIDER_PATH,
+      component: DevityPKIProviderComponent,
     }),
+    // TODO hook tab
     hookNavigator({
       // parent: '',
       priority: 6000,
-      path: ADMIN_PATH,
-      label: 'Devity',
+      path: ADMIN_PKI_PROVIDER_PATH,
+      label: 'PKI Provider',
       icon: 'deploy',
       preventDuplicates: true,
     }),

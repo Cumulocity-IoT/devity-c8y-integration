@@ -1,1 +1,1 @@
-export const ADMIN_PATH = 'devity';
+export const ADMIN_PKI_PROVIDER_PATH = 'pki-provider';

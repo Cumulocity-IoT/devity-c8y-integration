@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h3>
+    {{ (this.pkiProvider?.id ? 'Edit PKI Provder' : 'Configure PKI Provider') | translate }}
+  </h3>
+</div>
+
+<div class="modal-body" [formGroup]="form">
+  <div class="form-group flex-grow">
+    <label for="pki_url" translate>URL</label>
+    <input id="pki_url" class="form-control" name="url" formControlName="url" />
+  </div>
+
+  <div class="form-group">
+    <label for="pki_clientID" translate>Client ID</label>
+    <input id="pki_clientID" class="form-control" name="clientID" formControlName="clientID" />
+  </div>
+
+  <div class="form-group">
+    <label for="pki_clientSecret" translate>Client Secret</label>
+    <input id="pki_clientSecret" class="form-control" name="clientSecret" formControlName="clientSecret" />
+  </div>
+</div>
+ 
+<div class="modal-footer">
+  <button translate type="button" class="btn btn-default" (click)="close()">
+    Cancel
+  </button>
+  <button type="submit" class="btn btn-primary" [disabled]="isProcessing" [class.btn-pending]="isProcessing"
+    (click)="submit()">
+    {{ (this.pkiProvider?.id ? 'Update' : 'Create') | translate }}
+  </button>
+</div>
