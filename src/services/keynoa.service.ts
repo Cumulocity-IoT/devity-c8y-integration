@@ -23,7 +23,7 @@ export class KeynoaService {
 
     if (!match) throw 'Not a KEYNOA url';
 
-    this.fetchClient.get(this.getUrl(KEYNOA_URL_AUTH, { tenant: match[1] }));
+    this.fetchClient.fetch(this.getUrl(KEYNOA_URL_AUTH, { tenant: match[1] }));
   }
 
   private getUrl(url: string, replacements?: object): string {

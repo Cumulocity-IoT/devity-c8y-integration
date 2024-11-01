@@ -1,5 +1,5 @@
 import type { ConfigurationOptions } from '@c8y/devkit';
-import { author, description, version, name } from './package.json';
+import { author, description, version, name } from '../../../package.json';
 
 export default {
   runTime: {
@@ -12,17 +12,17 @@ export default {
     dynamicOptionsUrl: true,
     remotes: {
       // 'plugin name from package.json': [ PluginModule ]
-      'devity-admin-plugin': ['DevityAdminModule'],
+      'devity-device-management-plugin': ['DevityDeviceManagementModule'],
     },
     package: 'plugin',
     isPackage: true,
     noAppSwitcher: true,
     exports: [
       {
-        name: 'Devity SPS Administration',
-        module: 'DevityAdminModule',
-        path: './src/app/plugin/devity-administration.module.ts',
-        description: 'Devity Administration Plugin for SPS 2024 🚀',
+        name: 'Devity Device Management',
+        module: 'DevityDeviceManagementModule',
+        path: './src/app/plugin/devity-device-management.module.ts',
+        description: 'Devity Device Management Plugin for SPS 2024 🚀',
       },
     ],
   },

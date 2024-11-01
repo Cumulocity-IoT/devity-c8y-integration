@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CoreModule, hookNavigator, hookRoute } from '@c8y/ngx-components';
 import { FormlyModule } from '@ngx-formly/core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { ADMIN_PKI_PROVIDER_PATH } from '../../../../../src/models/app-admin.model';
+import { ADMIN_PKI_PROVIDER_PATH } from '~models/app-admin.model';
 import { DevityAdminPKIProviderModalComponent } from './components/admin-pki-provider-modal/admin-pki-provider-modal.component';
 import { DevityPKIProviderComponent } from './components/pki-provider/pki-provider.component';
 

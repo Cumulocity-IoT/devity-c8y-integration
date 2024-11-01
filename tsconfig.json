@@ -29,9 +29,10 @@
     "target": "ES2022",
     "useDefineForClassFields": false,
     "paths": {
-      "@components/*": ["./../../src/components/*"],
-      "@models/*": ["./../../src/models/*"],
-      "@services/*": ["./../../src/services/*"]
+      "~apps/*": ["./src/apps/*"],
+      "~components/*": ["./src/components/*"],
+      "~models/*": ["./src/models/*"],
+      "~services/*": ["./src/services/*"]
     }
   },
   "angularCompilerOptions": {

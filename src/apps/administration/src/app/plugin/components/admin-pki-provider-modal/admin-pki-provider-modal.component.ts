@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { PKIProvider } from '@models/pki-provider.model';
-import { KeynoaService } from '@services/keynoa.service';
+import { PKIProvider } from '~models/pki-provider.model';
+import { KeynoaService } from '~services/keynoa.service';
 
 @Component({
   selector: 'devity-admin-pki-providermodal',
@@ -19,7 +19,10 @@ export class DevityAdminPKIProviderModalComponent {
     clientSecret: new FormControl('', [Validators.required]),
   });
 
-  constructor(private bsModalRef: BsModalRef, private keynoaService: KeynoaService) {}
+  constructor(
+    private bsModalRef: BsModalRef,
+    private keynoaService: KeynoaService
+  ) {}
 
   close() {
     this.bsModalRef.hide();

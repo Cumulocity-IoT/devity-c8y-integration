@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { PKIProvider } from '@models/pki-provider.model';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { PKIProvider } from '~models/pki-provider.model';
 import { DevityAdminPKIProviderModalComponent } from '../admin-pki-provider-modal/admin-pki-provider-modal.component';
 
 @Component({

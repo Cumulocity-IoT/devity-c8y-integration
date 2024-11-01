@@ -1,0 +1,224 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "administration": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less",
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
+      "root": "src/apps/administration",
+      "sourceRoot": "src/apps/administration/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@c8y/devkit:build",
+          "options": {
+            "outputPath": "dist/administration",
+            "polyfills": ["zone.js"],
+            "tsConfig": "src/apps/administration/tsconfig.app.json",
+            "inlineStyleLanguage": "less",
+            "assets": [
+              "src/apps/administration/src/favicon.ico",
+              "src/apps/administration/src/assets"
+            ],
+            "styles": ["src/apps/administration/src/styles.less"],
+            "scripts": [],
+            "aot": false,
+            "main": "src/apps/administration/src/main.ts",
+            "buildOptimizer": false,
+            "allowedCommonJsDependencies": [
+              "regenerator-runtime/runtime",
+              "@cordobo/qrcode",
+              "zone.js/dist/zone",
+              "chroma-js",
+              "lodash"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all",
+              "buildOptimizer": false
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@c8y/devkit:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "administration:build:production"
+            },
+            "development": {
+              "buildTarget": "administration:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@c8y/devkit:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "less",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.less"],
+            "scripts": []
+          }
+        },
+        "deploy": {
+          "builder": "@c8y/devkit:deploy",
+          "configurations": {
+            "production": {
+              "buildTarget": "administration:build:production"
+            },
+            "development": {
+              "buildTarget": "administration:build:development"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "compile-i18n": {
+          "builder": "@c8y/devkit:compile-i18n"
+        }
+      }
+    },
+    "devicemanagement": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less",
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
+      "root": "src/apps/devicemanagement",
+      "sourceRoot": "src/apps/devicemanagement/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@c8y/devkit:build",
+          "options": {
+            "outputPath": "dist/devicemanagement",
+            "polyfills": ["zone.js"],
+            "tsConfig": "src/apps/devicemanagement/tsconfig.app.json",
+            "inlineStyleLanguage": "less",
+            "assets": ["src/apps/devicemanagement/src/favicon.ico", "src/apps/devicemanagement/src/assets"],
+            "styles": ["src/apps/devicemanagement/src/styles.less"],
+            "scripts": [],
+            "aot": false,
+            "main": "src/apps/devicemanagement/src/main.ts",
+            "buildOptimizer": false,
+            "allowedCommonJsDependencies": [
+              "regenerator-runtime/runtime",
+              "@cordobo/qrcode",
+              "zone.js/dist/zone",
+              "chroma-js",
+              "lodash"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all",
+              "buildOptimizer": false
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@c8y/devkit:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "devicemanagement:build:production"
+            },
+            "development": {
+              "buildTarget": "devicemanagement:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@c8y/devkit:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "less",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.less"],
+            "scripts": []
+          }
+        },
+        "deploy": {
+          "builder": "@c8y/devkit:deploy",
+          "configurations": {
+            "production": {
+              "buildTarget": "devicemanagement:build:production"
+            },
+            "development": {
+              "buildTarget": "devicemanagement:build:development"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "compile-i18n": {
+          "builder": "@c8y/devkit:compile-i18n"
+        }
+      }
+    }
+  }
+}
