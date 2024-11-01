@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "ng serve -u https://partner-devity.eu-latest.cumulocity.com",
-    "start:cp": "npm start -- --shell administration",
+    "start:plugin": "npm start -- --shell administration",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "ng build",

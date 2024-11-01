@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "start": "ng serve -u https://partner-devity.eu-latest.cumulocity.com",
-    "start:cp": "npm start -- --shell devicemanagement",
+    "start": "ng serve -u https://partner-devity.eu-latest.cumulocity.com --port 4201",
+    "start:plugin": "npm start -- --shell devicemanagement",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "ng build",
