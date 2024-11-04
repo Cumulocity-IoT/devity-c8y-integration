@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "start": "ng serve -u https://partner-devity.eu-latest.cumulocity.com",
-    "start:admin": "npm start -- --shell administration",
-    "start:dm": "npm start -- --shell devicemanagement --port 4201",
+    "start:admin": "npm start -- administration --shell administration",
+    "start:dm": "npm start -- devicemanagement --shell devicemanagement --port 4201",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "npm run build:admin && npm run build:dm",
