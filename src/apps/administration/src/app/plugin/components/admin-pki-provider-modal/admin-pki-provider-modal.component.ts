@@ -9,7 +9,22 @@ import { KeynoaService } from '~services/keynoa.service';
   templateUrl: './admin-pki-provider-modal.component.html',
 })
 export class DevityAdminPKIProviderModalComponent {
-  @Input() pkiProvider: PKIProvider;
+  @Input()
+  get pkiProvider(): PKIProvider {
+    return this._pkiProvider;
+  }
+  set pkiProvider(provider: PKIProvider) {
+    if (!!provider) {
+      this._pkiProvider = provider;
+      this.form.setValue({
+        // need to "sanitize" as overlapping managed object fragments would kill the form
+        id: provider.id || '',
+        url: provider.url || '',
+        clientID: provider.clientID || '',
+        clientSecret: provider.clientSecret || '',
+      });
+    }
+  }
 
   isProcessing = false;
 
@@ -17,7 +32,10 @@ export class DevityAdminPKIProviderModalComponent {
     url: new FormControl('', [Validators.required]),
     clientID: new FormControl('', [Validators.required]),
     clientSecret: new FormControl('', [Validators.required]),
+    id: new FormControl(''),
   });
+
+  private _pkiProvider?: PKIProvider;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -34,12 +52,7 @@ export class DevityAdminPKIProviderModalComponent {
     console.log('submit', this.form.value);
 
     try {
-      const auth = await this.keynoaService.auth(
-        this.form.value['url'],
-        this.form.value['clientID'],
-        this.form.value['clientSecret']
-      );
-      console.log('submit', auth);
+      await this.keynoaService.set(this.form.value);
     } catch (error) {
       console.error(error);
     }

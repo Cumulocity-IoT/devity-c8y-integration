@@ -1,3 +1,43 @@
 <c8y-title>{{ 'PKI Provider' | translate }}</c8y-title>
 
-<button type="button" (click)="openModal()">NEW</button>
+<!-- add -->
+<c8y-action-bar-item [placement]="'right'" [priority]="100">
+  <button type="button" class="btn btn-link" (click)="openModal()">
+    <i [c8yIcon]="'add'"></i>
+    {{ 'Add PKI Provider' | translate }}
+  </button>
+</c8y-action-bar-item>
+
+<!-- reload -->
+<c8y-action-bar-item [placement]="'right'">
+  <button type="button" class="btn btn-link" (click)="reload()">
+    <i [c8yIcon]="'refresh'"></i>
+    {{ 'Reload' | translate }}
+  </button>
+</c8y-action-bar-item>
+
+@if (isLoading) {
+  <c8y-loading></c8y-loading>
+} @else {
+  <c8y-list-group>
+    @for (provider of providers; track provider.id) {
+      <c8y-li>
+        {{ provider.url }}
+
+        <!-- actions -->
+        <c8y-li-action icon="disconnected" (click)="connect(provider)">
+          Connect
+        </c8y-li-action>
+        <c8y-li-action icon="pencil" (click)="openModal(provider)">
+          Edit
+        </c8y-li-action>
+        <c8y-li-action icon="trash" (click)="delete(provider)">
+          Delete
+        </c8y-li-action>
+      </c8y-li>
+    }
+    @empty {
+      <li translate>No PKI Providers configured.</li>
+    }
+  </c8y-list-group>
+}
