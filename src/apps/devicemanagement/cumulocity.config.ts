@@ -12,7 +12,7 @@ export default {
     dynamicOptionsUrl: true,
     remotes: {
       // 'plugin name from package.json': [ PluginModule ]
-      'devity-device-management-plugin': ['DevityDeviceManagementModule'],
+      'devity-sps-demo': ['DevityDeviceManagementModule'],
     },
     package: 'plugin',
     isPackage: true,

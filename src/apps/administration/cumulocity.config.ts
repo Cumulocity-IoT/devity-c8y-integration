@@ -12,7 +12,7 @@ export default {
     dynamicOptionsUrl: true,
     remotes: {
       // 'plugin name from package.json': [ PluginModule ]
-      'devity-administration-plugin': ['DevityAdminModule'],
+      'devity-sps-demo': ['DevityAdminModule'],
     },
     package: 'plugin',
     isPackage: true,
