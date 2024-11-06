@@ -23,15 +23,15 @@
   <c8y-list-group>
     @for (provider of providers; track provider.id) {
       <c8y-li>
-        @if (provider.name) {
-          <span>{{ provider.name }}</span>
+        @if (provider.caType) {
+          <span>{{ provider.caName }}</span>
           <span class="text-muted m-l-16">{{ provider.url }}</span>
         } @else {
           <span>{{ provider.url }}</span>
         }
 
         <!-- actions -->
-        <c8y-li-action icon="disconnected" [disabled]="!provider.name" (click)="connect(provider)">
+        <c8y-li-action icon="disconnected" [disabled]="!provider.caType" (click)="connect(provider)">
           Connect
         </c8y-li-action>
         <c8y-li-action icon="key" (click)="certificateAuthorityModal(provider)">

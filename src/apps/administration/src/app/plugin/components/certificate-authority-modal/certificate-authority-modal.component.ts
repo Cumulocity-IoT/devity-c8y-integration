@@ -9,11 +9,22 @@ import { KeynoaService } from '~services/keynoa.service';
   templateUrl: './certificate-authority-modal.component.html',
 })
 export class DevityCertificateAuthorityModalComponent {
-  @Input() pkiProvider: PKIProvider;
+  @Input()
+  get pkiProvider(): PKIProvider {
+    return this._pkiProvider;
+  }
+  set pkiProvider(pkiProvider: PKIProvider) {
+    console.log('set', pkiProvider, this.authorityTypes[0]);
+    this._pkiProvider = pkiProvider;
+    this.form.setValue({
+      caType: pkiProvider.caType || this.authorityTypes[0].value,
+      caName: pkiProvider.caName || '',
+    });
+  }
 
   form = new FormGroup({
-    type: new FormControl('keynoa', [Validators.required]),
-    name: new FormControl('', [Validators.required]),
+    caType: new FormControl('keynoa', [Validators.required]),
+    caName: new FormControl('', [Validators.required]),
   });
 
   authorityTypes = [
@@ -22,6 +33,8 @@ export class DevityCertificateAuthorityModalComponent {
   ];
 
   isProcessing = false;
+
+  private _pkiProvider?: PKIProvider;
 
   constructor(
     private bsModalRef: BsModalRef,
