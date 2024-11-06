@@ -14,7 +14,6 @@ export class DevityCertificateAuthorityModalComponent {
     return this._pkiProvider;
   }
   set pkiProvider(pkiProvider: PKIProvider) {
-    console.log('set', pkiProvider, this.authorityTypes[0]);
     this._pkiProvider = pkiProvider;
     this.form.setValue({
       caType: pkiProvider.caType || this.authorityTypes[0].value,

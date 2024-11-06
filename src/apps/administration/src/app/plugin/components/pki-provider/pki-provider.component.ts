@@ -37,7 +37,6 @@ export class DevityPKIProviderComponent implements OnInit {
   }
 
   async connect(provider: PKIProvider): Promise<void> {
-    // TODO
     const auth = await this.keynoaService.connect(provider);
 
     console.log('auth', auth);
