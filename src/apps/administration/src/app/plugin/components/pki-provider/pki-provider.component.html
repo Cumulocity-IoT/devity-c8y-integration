@@ -25,14 +25,17 @@
       <c8y-li>
         @if (provider.name) {
           <span>{{ provider.name }}</span>
-          <span class="text-muted m-l-8">{{ provider.url }}</span>
+          <span class="text-muted m-l-16">{{ provider.url }}</span>
         } @else {
           <span>{{ provider.url }}</span>
         }
 
         <!-- actions -->
-        <c8y-li-action icon="disconnected" (click)="connect(provider)">
+        <c8y-li-action icon="disconnected" [disabled]="!provider.name" (click)="connect(provider)">
           Connect
+        </c8y-li-action>
+        <c8y-li-action icon="key" (click)="certificateAuthorityModal(provider)">
+          Cert. Authority
         </c8y-li-action>
         <c8y-li-action icon="pencil" (click)="openModal(provider)">
           Edit
