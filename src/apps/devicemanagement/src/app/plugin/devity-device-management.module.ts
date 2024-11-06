@@ -2,13 +2,21 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CoreModule, gettext, hookComponent } from '@c8y/ngx-components';
+import {
+  CoreModule,
+  gettext,
+  hookComponent,
+  hookNavigator,
+  hookRoute,
+} from '@c8y/ngx-components';
 import { FormlyModule } from '@ngx-formly/core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { DevityDeviceDetails } from './components/device-details/device-details.component';
-import { CertificateWidgetComponent } from './components/certificate-widget/certificate-widget.component';
-import { CertificateConfigWidgetComponent } from './components/certificate-widget/certificate-widget-config.component';
+import { CERTIFICATES_LIST_PATH } from '~models/app-dm.model';
 import { assetPaths } from '../../assets/assets';
+import { CertificateListComponent } from './components/certificate-list/certificate-list.component';
+import { CertificateConfigWidgetComponent } from './components/certificate-widget/certificate-widget-config.component';
+import { CertificateWidgetComponent } from './components/certificate-widget/certificate-widget.component';
+import { DevityDeviceDetails } from './components/device-details/device-details.component';
 
 @NgModule({
   imports: [
@@ -19,7 +27,12 @@ import { assetPaths } from '../../assets/assets';
     FormlyModule.forChild(),
     CollapseModule,
   ],
-  declarations: [DevityDeviceDetails, CertificateWidgetComponent, CertificateConfigWidgetComponent],
+  declarations: [
+    DevityDeviceDetails,
+    CertificateWidgetComponent,
+    CertificateConfigWidgetComponent,
+    CertificateListComponent,
+  ],
   providers: [
     hookComponent({
       id: 'devity.certificate.widget',
@@ -44,19 +57,20 @@ import { assetPaths } from '../../assets/assets';
           // },
         },
       },
-    })
-  ]
-    // hookRoute({
-    //   path: RELEASE_NOTES_PATH,
-    //   component: ReleaseNotesAdminComponent,
-    // }),
-    // hookNavigator({
-    //   parent: 'Configuration',
-    //   priority: 1000,
-    //   path: RELEASE_NOTES_PATH,
-    //   label: 'Release Notes',
-    //   icon: 'activity-history',
-    //   preventDuplicates: true,
-    // }),
+    }),
+    // list of certificates
+    hookRoute({
+      path: CERTIFICATES_LIST_PATH,
+      component: CertificateListComponent,
+    }),
+    hookNavigator({
+      parent: 'Overviews',
+      priority: 1000,
+      path: CERTIFICATES_LIST_PATH,
+      label: 'Certificates',
+      icon: 'key',
+      preventDuplicates: true,
+    }),
+  ],
 })
 export class DevityDeviceManagementModule {}
