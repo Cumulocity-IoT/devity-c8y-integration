@@ -8,7 +8,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ADMIN_PKI_PROVIDER_PATH } from '~models/app-admin.model';
 import { DevityAdminPKIProviderModalComponent } from './components/admin-pki-provider-modal/admin-pki-provider-modal.component';
 import { DevityPKIProviderComponent } from './components/pki-provider/pki-provider.component';
-import { PKIProviderTabFactory } from './pki-provider-tab.factory';
+import { PKIProviderTabFactory } from './components/pki-provider/pki-provider-tab.factory';
 
 @NgModule({
   imports: [
