@@ -5,6 +5,7 @@ import { BsModalService } from "ngx-bootstrap/modal";
 import { CertificateMoveModalComponent } from "../certificate-move-modal/certificate-move-modal.component";
 import { firstValueFrom } from "rxjs";
 import { gettext, ModalService, Status } from "@c8y/ngx-components";
+import { DevityProxyService } from "~services/devity-proxy.service";
 
 @Component({
     templateUrl: './certificate-widget.component.html'
@@ -20,8 +21,23 @@ export class CertificateWidgetComponent {
         isActive: true
     };
 
-    constructor(route: ActivatedRoute, private bsModalService: BsModalService, private modal: ModalService) {
+    constructor(
+        route: ActivatedRoute, 
+        private bsModalService: BsModalService, 
+        private modal: ModalService,
+        private devityProxy: DevityProxyService) {
         this.device = route.snapshot.parent?.data["contextData"];
+
+        this.devityProxy.getDevices().then(devices => {
+            console.log(devices); // TODO: find the one device who's serialNumber matches the name of this mo
+           return this.devityProxy.getCertificates(devices[0].guid);
+        }).then(certificates => {
+            console.log(certificates); // TODO: find the certificate where the expiry date is the largest number (latest)
+        });
+
+        this.devityProxy.getCertificateAuthorities().then(cas => {
+          console.log(cas);
+        });
     }
 
     async revoke() {
