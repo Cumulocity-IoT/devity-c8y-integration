@@ -1,0 +1,44 @@
+<div class="inner-scroll">
+    <div class="d-flex d-col fit-min-h">
+      <div class="card-block bg-level-0 p-t-0">
+        <div class="text-center">
+            <c8y-operation-result
+                type="{{cert.isActive ? 'success' : 'warning'}}"
+                text="{{ (cert.isActive ? 'Active' : 'Expired') | translate}}"
+                [vertical]="true"
+            ></c8y-operation-result>
+            <p>
+                Application: {{ cert.application }}
+            </p>
+            <p>
+                Cert serial number: {{ cert.serialNumber }}
+            </p>
+            <p>
+                Issuing CA: {{ cert.authority }}
+            </p>
+            <p>
+                Issue date: {{ cert.issueDate }}
+            </p>
+            <p>
+                Expiration date: {{ cert.expirationDate }}
+            </p>
+        </div>
+      </div>
+
+      <div class="card-block m-t-auto separator-top bg-level-1 p-t-0 p-b-8">
+        <div class="btn-group-justified btn-group-sm p-t-8 separator-top device-status-btn" role="group">
+            <button class="btn btn-danger" title="{{ 'Revoke' | translate }}">
+              <i c8yIcon="delete"></i>
+              <span translate>Revoke</span>
+            </button>
+
+            <button class="btn btn-default" title="{{ 'Renew' | translate }}">
+                <i c8yIcon="replace"></i>
+                <span translate>Renew</span>
+            </button>
+
+          </div>
+      </div>
+
+    </div>
+</div>
