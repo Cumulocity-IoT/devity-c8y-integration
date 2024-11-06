@@ -28,7 +28,6 @@ import { PKIProviderTabFactory } from './components/pki-provider/pki-provider-ta
       path: ADMIN_PKI_PROVIDER_PATH,
       component: DevityPKIProviderComponent,
     }),
-    // TODO hook tab
     hookTab(PKIProviderTabFactory),
   ],
 })

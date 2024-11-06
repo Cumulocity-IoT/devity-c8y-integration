@@ -11,33 +11,47 @@
 <!-- reload -->
 <c8y-action-bar-item [placement]="'right'">
   <button type="button" class="btn btn-link" (click)="reload()">
-    <i [c8yIcon]="'refresh'"></i>
+    <i [c8yIcon]="'refresh'" [class.icon-spin]="isLoading"></i>
     {{ 'Reload' | translate }}
   </button>
 </c8y-action-bar-item>
 
-@if (isLoading) {
-  <c8y-loading></c8y-loading>
-} @else {
-  <c8y-list-group>
-    @for (provider of providers; track provider.id) {
-      <c8y-li>
-        {{ provider.url }}
+<!-- listing -->
+<div class="card card--fullpage">
+  <div class="card-header separator">
+    <div class="card-title">PKI Provider</div>
+  </div>
 
-        <!-- actions -->
-        <c8y-li-action icon="disconnected" (click)="connect(provider)">
-          Connect
-        </c8y-li-action>
-        <c8y-li-action icon="pencil" (click)="openModal(provider)">
-          Edit
-        </c8y-li-action>
-        <c8y-li-action icon="trash" (click)="delete(provider)">
-          Delete
-        </c8y-li-action>
-      </c8y-li>
+  <div class="card-block">
+    @if (isLoading) {
+      <c8y-loading></c8y-loading>
+    } @else {
+      <c8y-list-group>
+        @for (provider of providers; track provider.id) {
+          <c8y-li>
+            @if (provider.name) {
+              <span>{{ provider.name }}</span>
+              <span class="text-muted m-l-8">{{ provider.url }}</span>
+            } @else {
+              <span>{{ provider.url }}</span>
+            }
+
+            <!-- actions -->
+            <c8y-li-action icon="disconnected" (click)="connect(provider)">
+              Connect
+            </c8y-li-action>
+            <c8y-li-action icon="pencil" (click)="openModal(provider)">
+              Edit
+            </c8y-li-action>
+            <c8y-li-action icon="trash" (click)="delete(provider)">
+              Delete
+            </c8y-li-action>
+          </c8y-li>
+        }
+        @empty {
+          <li translate>No PKI Providers configured.</li>
+        }
+      </c8y-list-group>
     }
-    @empty {
-      <li translate>No PKI Providers configured.</li>
-    }
-  </c8y-list-group>
-}
+  </div>
+</div>
