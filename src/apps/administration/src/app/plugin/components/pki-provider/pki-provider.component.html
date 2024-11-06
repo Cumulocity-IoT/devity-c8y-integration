@@ -11,22 +11,31 @@
 <!-- reload -->
 <c8y-action-bar-item [placement]="'right'">
   <button type="button" class="btn btn-link" (click)="reload()">
-    <i [c8yIcon]="'refresh'"></i>
+    <i [c8yIcon]="'refresh'" [class.icon-spin]="isLoading"></i>
     {{ 'Reload' | translate }}
   </button>
 </c8y-action-bar-item>
 
+<!-- listing -->
 @if (isLoading) {
   <c8y-loading></c8y-loading>
 } @else {
   <c8y-list-group>
     @for (provider of providers; track provider.id) {
       <c8y-li>
-        {{ provider.url }}
+        @if (provider.caType) {
+          <span>{{ provider.caName }}</span>
+          <span class="text-muted m-l-16">{{ provider.url }}</span>
+        } @else {
+          <span>{{ provider.url }}</span>
+        }
 
         <!-- actions -->
-        <c8y-li-action icon="disconnected" (click)="connect(provider)">
+        <c8y-li-action icon="disconnected" [disabled]="!provider.caType" (click)="connect(provider)">
           Connect
+        </c8y-li-action>
+        <c8y-li-action icon="key" (click)="certificateAuthorityModal(provider)">
+          Cert. Authority
         </c8y-li-action>
         <c8y-li-action icon="pencil" (click)="openModal(provider)">
           Edit

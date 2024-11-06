@@ -1,1 +1,1 @@
-export const ADMIN_PKI_PROVIDER_PATH = 'pki-provider';
+export const ADMIN_PKI_PROVIDER_PATH = 'auth-configuration/pki-provider';

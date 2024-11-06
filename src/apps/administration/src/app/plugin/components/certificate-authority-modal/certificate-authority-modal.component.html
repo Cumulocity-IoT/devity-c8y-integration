@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h3 translate>Create Certificate Authority</h3>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="modal-body">
+    <div class="form-group flex-grow">
+      <label for="ca_type" translate>Type</label>
+
+      <div class="c8y-select-wrapper">
+        <select id="ca_type" name="type" formControlName="caType">
+          @for (ca of authorityTypes; track ca.value) {
+            <option class="form-control" [ngValue]="ca.value">
+              {{ ca.label }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ca_name" translate>Name</label>
+      <input id="ca_name" class="form-control" name="name" formControlName="caName" />
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button translate type="button" class="btn btn-default" (click)="close()">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="isProcessing" [class.btn-pending]="isProcessing" translate>
+      Create
+    </button>
+  </div>
+</form>
+

@@ -3,6 +3,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { PKIProvider } from '~models/pki-provider.model';
 import { KeynoaService } from '~services/keynoa.service';
 import { DevityAdminPKIProviderModalComponent } from '../admin-pki-provider-modal/admin-pki-provider-modal.component';
+import { DevityCertificateAuthorityModalComponent } from '../certificate-authority-modal/certificate-authority-modal.component';
 
 @Component({
   selector: 'devity-pki-provider',
@@ -21,26 +22,41 @@ export class DevityPKIProviderComponent implements OnInit {
     void this.reload();
   }
 
+  certificateAuthorityModal(provider: PKIProvider): void {
+    const modalRef = this.bdModalService.show(
+      DevityCertificateAuthorityModalComponent,
+      {
+        initialState: {
+          pkiProvider: provider,
+        },
+        class: 'modal-xs'
+      }
+    );
+
+    modalRef.onHide.subscribe(() => this.reload());
+  }
+
   async connect(provider: PKIProvider): Promise<void> {
+    // TODO
     const auth = await this.keynoaService.connect(provider);
 
     console.log('auth', auth);
   }
 
-  async delete(pkiProvider: PKIProvider): Promise<void> {
+  async delete(provider: PKIProvider): Promise<void> {
     this.isLoading = true;
-    await this.keynoaService.delete(pkiProvider.id);
+    await this.keynoaService.delete(provider.id);
     this.isLoading = false;
 
     await this.reload;
   }
 
-  openModal(pkiProvider?: PKIProvider): void {
+  openModal(provider?: PKIProvider): void {
     const modalRef = this.bdModalService.show(
       DevityAdminPKIProviderModalComponent,
       {
         initialState: {
-          pkiProvider,
+          pkiProvider: provider,
         },
       }
     );
