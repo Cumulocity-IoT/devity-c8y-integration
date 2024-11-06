@@ -2,11 +2,21 @@
     <div class="d-flex d-col fit-min-h">
       <div class="card-block bg-level-0 p-t-0">
         <div class="text-center">
-            <c8y-operation-result
+            <div class="d-flex a-i-center m-16 p-b-0 j-c-center">
+                <span>
+                    <i 
+                        c8yIcon="{{cert.isActive ? 'check-circle' : 'exclamation-circle'}}" 
+                        class="c8y-icon icon-lg" 
+                        ngClass="{{cert.isActive ? 'text-success' : 'text-danger'}}">
+                    </i>
+                </span>
+                <p class="text-bold">{{ (cert.isActive ? 'Active' : 'Expired') | translate}}</p>
+            </div>
+            <!-- <c8y-operation-result
                 type="{{cert.isActive ? 'success' : 'warning'}}"
-                text="{{ (cert.isActive ? 'Active' : 'Expired') | translate}}"
+                text=""
                 [vertical]="true"
-            ></c8y-operation-result>
+            ></c8y-operation-result> -->
             <p>
                 Application: {{ cert.application }}
             </p>
@@ -16,26 +26,34 @@
             <p>
                 Issuing CA: {{ cert.authority }}
             </p>
-            <p>
-                Issue date: {{ cert.issueDate }}
+            <p class="">
+                <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
+                Issue date: {{ cert.issueDate | c8yDate }}
             </p>
-            <p>
-                Expiration date: {{ cert.expirationDate }}
+            <p class="">
+                <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
+                Expiration date: {{ cert.expirationDate | c8yDate }}
             </p>
         </div>
       </div>
 
       <div class="card-block m-t-auto separator-top bg-level-1 p-t-0 p-b-8">
         <div class="btn-group-justified btn-group-sm p-t-8 separator-top device-status-btn" role="group">
-            <button class="btn btn-danger" title="{{ 'Revoke' | translate }}">
-              <i c8yIcon="delete"></i>
-              <span translate>Revoke</span>
-            </button>
-
-            <button class="btn btn-default" title="{{ 'Renew' | translate }}">
-                <i c8yIcon="replace"></i>
+            
+            <button class="btn btn-default" title="{{ 'Renew' | translate }}" (click)="renew()">
+                <i c8yIcon="reset"></i>
                 <span translate>Renew</span>
             </button>
+
+            <button class="btn btn-default" title="{{ 'Move' | translate }}" (click)="move()">
+                <i c8yIcon="forward1"></i>
+                <span translate>Move</span>
+            </button>
+
+            <button class="btn btn-danger" title="{{ 'Revoke' | translate }}" (click)="revoke()">
+                <i c8yIcon="delete"></i>
+                <span translate>Revoke</span>
+              </button>
 
           </div>
       </div>
