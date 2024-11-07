@@ -15,7 +15,7 @@ export type ProxyRequest = {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers: { [key: string]: string };
-  body: object | null;
+  body: string | null;
 };
 
 export type ProxyResponse<T> = {
@@ -32,15 +32,14 @@ export class DevityProxyService {
   revokeCertificate(
     issuingCaId: string, 
     body: { 
-        serial_number: DevityDevice['serialNumber'], 
-        certificate: DevityDeviceCertificate['certificateSerialNumber'] 
-    }) {
+        serial_number: DevityDeviceCertificate['certificateSerialNumber']  
+    } | { certificate: unknown }) {
     const url = `/issuingCAs/${issuingCaId}/revoke`;
     const request: ProxyRequest = {
       url,
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body,
+      body: JSON.stringify(body),
     };
     return this.proxy(request);
   }
