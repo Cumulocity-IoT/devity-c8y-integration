@@ -37,9 +37,12 @@ export class DevityProxyService {
     const request: ProxyRequest = {
       url,
       method: 'POST',
-      headers: { Accept: 'application/json' },
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: {
-        serial_number: certificateSerialNumber,
+        serialNumber: certificateSerialNumber,
       },
     };
     return this.proxy(request);
