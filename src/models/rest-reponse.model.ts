@@ -28,6 +28,8 @@ export interface DevityDeviceCertificate {
   expiredAt: number;
   /** Timestamp in milliseconds, nullable */
   revokedAt: number | null;
+  // calculated status (valid/revoked/expired)
+  status?: DevityCertificateStatus;
 }
 
 export interface DevityDeviceApp {

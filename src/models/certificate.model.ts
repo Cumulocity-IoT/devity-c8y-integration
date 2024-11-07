@@ -1,13 +1,8 @@
-import { Column, ColumnDataType, Pagination } from '@c8y/ngx-components';
+import { Column, ColumnDataType } from '@c8y/ngx-components';
 import { CertificateAssetCellRendererComponent } from '~components/cells/certificate-asset.cell';
 import { DateCellRendererComponent } from '~components/cells/date.cell';
 import { RelativeDateCellRendererComponent } from '~components/cells/relative-date.cell';
 import { CertificateStatusColumn } from '~components/columns/certificate-status.column';
-
-export const CERTIFICATE_PAGINATION: Pagination = {
-  pageSize: 10,
-  currentPage: 1,
-};
 
 export const CERTIFIACTE_LIST_COLUMNS: Column[] = [
   // device                     » deviceGuid
@@ -27,31 +22,32 @@ export const CERTIFIACTE_LIST_COLUMNS: Column[] = [
     cellRendererComponent: CertificateAssetCellRendererComponent,
   },
   {
-    name: 'appInstanceId',
+    name: 'application',
     header: 'Application',
     path: 'appInstanceId',
     filterable: false,
     sortable: false,
     dataType: ColumnDataType.TextShort,
+    gridTrackSize: '120px',
   },
   {
     name: 'certificateSerialNumber',
-    header: 'Certificate Seria lNumber',
+    header: 'Certificate Serial Number',
     path: 'certificateSerialNumber',
     filterable: false,
     sortable: false,
     dataType: ColumnDataType.TextShort,
   },
   {
-    name: 'caFingerprint',
+    name: 'issuingCA',
     header: 'issuing CA',
-    path: 'caFingerprint',
+    path: 'authoritySubjectCn',
     filterable: false,
     sortable: false,
     dataType: ColumnDataType.TextShort,
   },
   {
-    name: 'issuedAt',
+    name: 'issueDate',
     header: 'Issue Date',
     path: 'issuedAt',
     filterable: false,
@@ -59,12 +55,13 @@ export const CERTIFIACTE_LIST_COLUMNS: Column[] = [
     cellRendererComponent: DateCellRendererComponent,
   },
   {
-    name: 'expiredAt',
+    name: 'expiration',
     header: 'Expiration',
     path: 'expiredAt',
     filterable: false,
     sortable: false,
     cellRendererComponent: RelativeDateCellRendererComponent,
+    gridTrackSize: '100px',
   },
   new CertificateStatusColumn(),
 ];
