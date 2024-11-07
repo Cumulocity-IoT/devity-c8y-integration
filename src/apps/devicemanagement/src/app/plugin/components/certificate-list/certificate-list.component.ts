@@ -14,6 +14,7 @@ import {
   DevityDevice,
   DevityDeviceCertificate,
 } from '~models/rest-reponse.model';
+import { CertificateActionService } from '~services/certificate-action.service';
 import { DevityProxyService } from '~services/devity-proxy.service';
 
 interface UnionDevice extends IManagedObject {
@@ -65,7 +66,8 @@ export class CertificateListComponent implements OnInit {
   constructor(
     private inventoryService: InventoryService,
     private devityProxyService: DevityProxyService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private certActionService: CertificateActionService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -104,22 +106,17 @@ export class CertificateListComponent implements OnInit {
     this.alertService.info('Not Yet Implemented');
   }
 
-  async revoke(certificateRow: Row): Promise<void> {
-    try {
-      await this.devityProxyService.revokeCertificate(
-        certificateRow.issuingCaId,
-        certificateRow.certificateSerialNumber
-      );
-
-      this.alertService.success(
-        `Certificate ${certificateRow.certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
-      );
-
-      void this.reload();
-    } catch (error) {
-      this.alertService.danger('Could not revoke Certificate', error as string);
-      console.error(error);
-    }
+  revoke(certificateRow: Row): void {
+    this.certActionService.revoke(
+      certificateRow.issuingCaId, 
+      certificateRow.certificateSerialNumber)
+      .then((res) => {
+        if (res.status === 'success') {
+          void this.reload();
+        } else if (res.status === 'error') {
+          console.error(res.error);
+        }
+      });
   }
 
   // expecting lt 2k devices for the demo…

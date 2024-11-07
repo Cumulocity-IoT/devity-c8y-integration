@@ -30,7 +30,7 @@ export class DevityProxyService {
   constructor(private ms: MicroserviceService) {}
 
   revokeCertificate(
-    issuingCaId: string,
+    issuingCaId: number,
     certificateSerialNumber: DevityDeviceCertificate['certificateSerialNumber']
   ) {
     const url = `/issuingCAs/${issuingCaId}/revoke`;

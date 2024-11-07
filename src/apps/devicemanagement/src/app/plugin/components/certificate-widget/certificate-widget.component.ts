@@ -1,13 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IManagedObject } from "@c8y/client";
-import { BsModalService } from "ngx-bootstrap/modal";
-import { CertificateMoveModalComponent } from "../certificate-move-modal/certificate-move-modal.component";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
-import { gettext, ModalService, Status } from "@c8y/ngx-components";
+import { BehaviorSubject } from "rxjs";
 import { DevityProxyService } from "~services/devity-proxy.service";
 import { isNil, maxBy } from "lodash";
 import { CumulocityConfiguration, DevityDevice, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
+import { CertificateActionService } from "~services/certificate-action.service";
 
 @Component({
     templateUrl: './certificate-widget.component.html',
@@ -24,8 +22,10 @@ export class CertificateWidgetComponent {
       expirationDate: string,
       isActive: boolean 
     };
+    currentCertificate?: DevityDeviceCertificate;
 
     issuingCA?: {
+      caCertificateId: number;
       subjectCN: string;
       expirationDate: string;
     }
@@ -40,9 +40,9 @@ export class CertificateWidgetComponent {
 
     constructor(
         route: ActivatedRoute, 
-        private bsModalService: BsModalService, 
-        private modal: ModalService,
-        private devityProxy: DevityProxyService) {
+        private devityProxy: DevityProxyService,
+        private certActionService: CertificateActionService
+      ) {
         this.device = route.snapshot.parent?.data["contextData"];
 
         this.refresh();
@@ -103,6 +103,7 @@ export class CertificateWidgetComponent {
           expirationDate: expirationDate.toISOString(),
           isActive: this.isActive(certToShow)
         };
+        this.currentCertificate = certToShow;
       } else {
         throw new Error('No certificates available.')
       }
@@ -137,6 +138,7 @@ export class CertificateWidgetComponent {
       try {
         const certificateAuthority = await this.devityProxy.getCertificateAuthority(c8yConfig.caId);
         this.issuingCA = {
+          caCertificateId: certificateAuthority.caCertificateId,
           subjectCN: certificateAuthority.subjectCn,
           expirationDate: certificateAuthority.expirationTime,
         };
@@ -161,48 +163,19 @@ export class CertificateWidgetComponent {
       }
     }
 
-    async revoke() {
-        try {
-            await this.modal.confirm(
-              "Revoke certificate",
-              "You are about to revoke the certificate. This will remove the device from the tenant.",
-              Status.DANGER,
-              {
-                ok: gettext("Revoke"),
-              },
-            );
-            // eslint-disable-next-line no-console
-            console.log("Revoke clicked");
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log("Cancel clicked");
-          }
-    }
-
-    async renew() {
-        try {
-            await this.modal.confirm(
-              "Renew certificate",
-              "You are about to renew the certificate. Are you sure you want to continue?",
-              Status.WARNING,
-              {
-                ok: gettext("Renew"),
-              },
-            );
-            // eslint-disable-next-line no-console
-            console.log("Renew clicked");
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log("Cancel clicked");
-          }
-    }
-
-    async move() {
-        const ref = this.bsModalService.show(CertificateMoveModalComponent);
-        const url = await firstValueFrom(ref.content.closeSubject);
-        if (url) {
-
+    revoke() {
+       this.certActionService.revoke(
+        this.issuingCA.caCertificateId, 
+        this.currentCertificate.certificateSerialNumber
+      ).then((res) => {
+        if (res.status === 'success') {
+          this.refresh();
+        } else if (res.status === 'error') {
+          console.error(res.error);
         }
+      });
     }
+
+    
 
 }
