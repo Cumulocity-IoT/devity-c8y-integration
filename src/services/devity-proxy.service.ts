@@ -29,13 +29,18 @@ export type ProxyResponse<T> = {
 export class DevityProxyService {
   constructor(private ms: MicroserviceService) {}
 
-  revokeCertificate(issuingCaId: string) {
+  revokeCertificate(
+    issuingCaId: string, 
+    body: { 
+        serial_number: DevityDevice['serialNumber'], 
+        certificate: DevityDeviceCertificate['certificateSerialNumber'] 
+    }) {
     const url = `/issuingCAs/${issuingCaId}/revoke`;
     const request: ProxyRequest = {
       url,
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: null,
+      body,
     };
     return this.proxy(request);
   }
