@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MicroserviceService } from "./microservice.service";
-import { DevityCertificateData, DevityDevice, DevityDeviceCertificate } from "~models/rest-reponse.model";
+import { CaCertificateDto, CumulocityConfiguration, DevityCertificateData, DevityDevice, DevityDeviceApp, DevityDeviceCertificate, ThinEdgeConfiguration, TrustAnchorCertificate } from "~models/rest-reponse.model";
 
 export type ProxyRequest = {
     url: string;
@@ -18,6 +18,7 @@ export type ProxyResponse<T> = {
     providedIn: 'root'
 })
 export class DevityProxyService {
+
     constructor (private ms: MicroserviceService) {}
 
     revokeCertificate(issuingCaId: string) {
@@ -51,7 +52,7 @@ export class DevityProxyService {
         return this.proxy<DevityDeviceCertificate[]>(request);
     }
 
-    getExpiringCertificates(caFingerprint: string, days: number) {
+    getExpiringCertificates(caFingerprint: DevityCertificateData['fingerprint'], days: number) {
         const request: ProxyRequest = {
             url: `/appCertificates/expiring?caFingerprint=${caFingerprint}&daysAmount=${days}`,
             method: 'GET',
@@ -61,7 +62,7 @@ export class DevityProxyService {
         return this.proxy<DevityDeviceCertificate[]>(request);
     }
 
-    getExpiredCertificates(caFingerprint: string, days: number) {
+    getExpiredCertificates(caFingerprint: DevityCertificateData['fingerprint'], days: number) {
         const request: ProxyRequest = {
             url: `/appCertificates/expired?caFingerprint=${caFingerprint}&daysAmount=${days}`,
             method: 'GET',
@@ -79,6 +80,56 @@ export class DevityProxyService {
             body: null
         };
         return this.proxy<DevityCertificateData[]>(request);
+    }
+
+    getAppInstances(guid: DevityDevice['guid']) {
+        const request: ProxyRequest = {
+            url: `/devices/${guid}/appInstances`,
+            method: 'GET',
+            headers: { "Accept":"application/json" },
+            body: null
+        };
+        return this.proxy<DevityDeviceApp[]>(request);
+    }
+
+    getThinEdgeConfig(localConfigId: DevityDeviceApp['localConfigId']) {
+        const request: ProxyRequest = {
+            url: `/thinEdgeConfigurations/${localConfigId}`,
+            method: 'GET',
+            headers: { "Accept":"application/json" },
+            body: null
+        };
+        return this.proxy<ThinEdgeConfiguration>(request);
+    }
+
+    getCumulocityConfig(cumulocityConfigurationId: ThinEdgeConfiguration['cumulocityConfigurationId']) {
+        const request: ProxyRequest = {
+            url: `/cumulocityConfigurations/${cumulocityConfigurationId}`,
+            method: 'GET',
+            headers: { "Accept":"application/json" },
+            body: null
+        };
+        return this.proxy<CumulocityConfiguration>(request);
+    }
+
+    getCertificateAuthority(caId: CumulocityConfiguration['caId']) {
+        const request: ProxyRequest = {
+            url: `/certificateAuthorities/trustanchors/id/${caId}`,
+            method: 'GET',
+            headers: { "Accept":"application/json" },
+            body: null
+        };
+        return this.proxy<CaCertificateDto>(request);
+    }
+
+    getTrustAnchor(cloudCaFingerprintPrimary: CumulocityConfiguration['cloudCaFingerprintPrimary']) {
+        const request: ProxyRequest = {
+            url: `/certificateAuthorities/trustanchors/fingerprint/${cloudCaFingerprintPrimary}`,
+            method: 'GET',
+            headers: { "Accept":"application/json" },
+            body: null
+        };
+        return this.proxy<TrustAnchorCertificate>(request);
     }
 
     private proxy<T>(request: ProxyRequest): Promise<T> {

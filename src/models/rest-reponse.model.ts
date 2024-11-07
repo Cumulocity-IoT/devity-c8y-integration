@@ -49,3 +49,54 @@ export interface DevityDeviceCertificate {
     isEnterprise: boolean;
     acmeDirectory: string;
 }
+
+export interface DevityDeviceApp {
+    deviceGuid: string;
+    appInstanceId: string;
+    configType: string;
+    localConfigId: number;
+}
+
+export interface CumulocityConfiguration {
+    id: number;
+    c8yUrl: string;
+    caId: number;
+    cloudCaFingerprintPrimary: string;
+    cloudCaFingerprintSecondary?: string | null;
+  }
+  export interface ThinEdgeConfiguration {
+    id: number;
+    cumulocityConfigurationId: number;
+    templateName: string;
+    certificateTemplateId: number;
+    deviceSelector?: any | null;
+    cumulocityConfiguration?: CumulocityConfiguration | null;
+  }
+
+  export interface CaCertificateDto {
+    caCertificateId: number;
+    certificate: string;
+    fingerprint: string;
+    issuerCaFingerprint: string | null;
+    algorithm: string;
+    issuerCn: string;
+    subjectCn: string;
+    subOrganization: string | null;
+    expirationTime: string;
+  }
+  
+  export interface TrustAnchorCertificate {
+    caCertificateId: number;
+    certificate: string;
+    fingerprint: string;
+    issuerCaFingerprint: string | null;
+    algorithm: string;
+    issuerCn: string;
+    subjectCn: string;
+    subOrganization: string;
+    expirationTime: string;
+    crlDistributionUrl: string | null;
+  }
+  
+
+  

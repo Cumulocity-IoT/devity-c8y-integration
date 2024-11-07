@@ -5,52 +5,91 @@
             <div class="d-flex a-i-center m-16 p-b-0 j-c-center">
                 <span>
                     <i 
-                        c8yIcon="{{cert.isActive ? 'check-circle' : 'exclamation-circle'}}" 
-                        class="c8y-icon icon-lg" 
-                        ngClass="{{cert.isActive ? 'text-success' : 'text-danger'}}">
+                        c8yIcon="{{ (didFinishLoading && !cert) ? 'unverified-account' : cert.isActive ? 'approval' : 'exclamation-circle'}}" 
+                        class="c8y-icon icon-32" 
+                        ngClass="{{ (didFinishLoading && !cert) ? 'text-info' : cert.isActive ? 'text-success' : 'text-danger'}}">
                     </i>
                 </span>
-                <p class="text-bold">{{ (cert.isActive ? 'Active' : 'Expired') | translate}}</p>
+                <p class="text-bold">{{ (didFinishLoading && !cert) ? 'No certificate found.' : (cert.isActive ? 'Active' : 'Expired') | translate}}</p>
             </div>
-            <!-- <c8y-operation-result
-                type="{{cert.isActive ? 'success' : 'warning'}}"
-                text=""
-                [vertical]="true"
-            ></c8y-operation-result> -->
-            <p>
-                Application: {{ cert.application }}
-            </p>
-            <p>
-                Cert serial number: {{ cert.serialNumber }}
-            </p>
-            <p>
-                Issuing CA: {{ cert.authority }}
-            </p>
-            <p class="">
-                <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
-                Issue date: {{ cert.issueDate | c8yDate }}
-            </p>
-            <p class="">
-                <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
-                Expiration date: {{ cert.expirationDate | c8yDate }}
-            </p>
+        
+            <span *ngIf="cert">
+                <p>
+                    <b>Application:</b> {{ cert.application }}
+                </p>
+                <p>
+                    <b>Cert serial number:</b> {{ cert.serialNumber }}
+                </p>
+                <p>
+                    <b>Issuing CA:</b> {{ cert.authority }}
+                </p>
+                <p class="">
+                    <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
+                <b>Issue date:</b> {{ cert.issueDate | c8yDate }}
+                </p>
+                <p class="">
+                    <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
+                    <b>Expiration date:</b> {{ cert.expirationDate | c8yDate }}
+                </p>
+            </span>
+            
         </div>
+        <c8y-loading *ngIf="isLoading"></c8y-loading>        
       </div>
 
       <div class="card-block m-t-auto separator-top bg-level-1 p-t-0 p-b-8">
+        <fieldset class="c8y-fieldset" *ngIf="issuingCA">
+            <legend translate="">Issuing CA</legend>
+            <div class="form-horizontal m-t-4">
+                <div class="form-group m-b-0">
+                    <label class="col-sm-2 control-label">Subject CN</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">{{issuingCA.subjectCN}}</p>
+                    </div>
+                </div>
+                <div class="form-group m-b-0">
+                    <label class="control-label col-sm-2">Expires on</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">{{issuingCA.expirationDate | c8yDate}}</p>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="c8y-fieldset" *ngIf="trustAnchor">
+            <legend translate="">Trust Anchor (Primary) - in use</legend>
+            <div class="form-horizontal m-t-4">
+                <div class="form-group m-b-0">
+                    <label class="col-sm-2 control-label">Subject CN</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">{{trustAnchor.subjectCN}}</p>
+                    </div>
+                </div>
+                <div class="form-group m-b-0">
+                    <label class="control-label col-sm-2">Expires on</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">{{trustAnchor.expirationDate | c8yDate}}</p>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- <div class="d-flex gap-8 a-i-center separator-top">
+            <p class="col-xs-5 text-12 p-0 text-medium flex-no-shrink" ng-hide="vm.isEditMode" translate="">Required interval</p>
+        </div> -->
+
         <div class="btn-group-justified btn-group-sm p-t-8 separator-top device-status-btn" role="group">
-            
-            <button class="btn btn-default" title="{{ 'Renew' | translate }}" (click)="renew()">
+            <button class="btn btn-default" title="{{ 'Renew' | translate }}" (click)="renew()" [disabled]="!cert">
                 <i c8yIcon="reset"></i>
                 <span translate>Renew</span>
             </button>
 
-            <button class="btn btn-default" title="{{ 'Move' | translate }}" (click)="move()">
+            <button class="btn btn-default" title="{{ 'Move' | translate }}" (click)="move()" [disabled]="!cert">
                 <i c8yIcon="forward1"></i>
                 <span translate>Move</span>
             </button>
 
-            <button class="btn btn-danger" title="{{ 'Revoke' | translate }}" (click)="revoke()">
+            <button class="btn btn-danger" title="{{ 'Revoke' | translate }}" (click)="revoke()" [disabled]="!cert">
                 <i c8yIcon="delete"></i>
                 <span translate>Revoke</span>
               </button>
