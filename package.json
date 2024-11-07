@@ -33,6 +33,7 @@
     "@c8y/client": "1020.28.1",
     "@c8y/ngx-components": "1020.28.1",
     "@c8y/style": "1020.28.1",
+    "ngx-moment": "^6.0.2",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
