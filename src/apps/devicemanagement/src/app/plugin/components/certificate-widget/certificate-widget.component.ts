@@ -204,6 +204,6 @@ export class CertificateWidgetComponent {
     }
 
     renew() {
-
+      this.certActionService.renew();
     }
 }
