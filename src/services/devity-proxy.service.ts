@@ -48,6 +48,28 @@ export class DevityProxyService {
     return this.proxy(request);
   }
 
+  moveDevice(
+    appInstanceId: DevityDeviceApp['appInstanceId'], 
+    deviceGuid: DevityDevice['guid'], 
+    localConfigId: number) {
+    const url = `/devices/switchConfig`;
+    const request: ProxyRequest = {
+      url,
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: {
+        appInstanceId,
+        configType: 'thin-edge',
+        deviceGuid,
+        localConfigId
+      },
+    };
+    return this.proxy(request);
+  }
+
   getDevices() {
     const request: ProxyRequest = {
       url: '/devices',
@@ -122,6 +144,16 @@ export class DevityProxyService {
       body: null,
     };
     return this.proxy<ThinEdgeConfiguration>(request);
+  }
+
+  getThinEdgeConfigs() {
+    const request: ProxyRequest = {
+        url: `/thinEdgeConfigurations`,
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        body: null,
+      };
+      return this.proxy<ThinEdgeConfiguration[]>(request);
   }
 
   getCumulocityConfig(

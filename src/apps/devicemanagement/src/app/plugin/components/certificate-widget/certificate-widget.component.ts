@@ -4,7 +4,7 @@ import { IManagedObject } from "@c8y/client";
 import { BehaviorSubject } from "rxjs";
 import { DevityProxyService } from "~services/devity-proxy.service";
 import { isNil, maxBy } from "lodash";
-import { CumulocityConfiguration, DevityDevice, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
+import { CumulocityConfiguration, DevityDevice, DevityDeviceApp, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
 import { CertificateActionService } from "~services/certificate-action.service";
 
 @Component({
@@ -22,7 +22,6 @@ export class CertificateWidgetComponent {
       expirationDate: string,
       isActive: boolean 
     };
-    currentCertificate?: DevityDeviceCertificate;
 
     issuingCA?: {
       caCertificateId: number;
@@ -34,6 +33,18 @@ export class CertificateWidgetComponent {
       subjectCN: string;
       expirationDate: string;
     }
+
+    keynoaRawData: {
+      device?: DevityDevice,
+      certificate?: DevityDeviceCertificate,
+      app?: DevityDeviceApp,
+      config?: ThinEdgeConfiguration
+    } = {
+      device: undefined,
+      certificate: undefined,
+      app: undefined,
+      config: undefined
+    };
       
       isLoading$ = new BehaviorSubject<boolean>(false);
       didFinishLoading = false;
@@ -69,10 +80,12 @@ export class CertificateWidgetComponent {
       const keynoaDevice = devices.find(d => d.serialNumber === this.device.name);
       const guid = keynoaDevice?.guid;
       if (!guid) { return; }
+      this.keynoaRawData.device = keynoaDevice;
       this.loadAndDisplayCert(guid);
       if (!onlyDisplayCert) {
         const thinEdgeConfig = await this.loadThinEdgeConfig(guid);
         if (thinEdgeConfig) {
+          this.keynoaRawData.config = thinEdgeConfig;
           const c8yConfig = await this.loadCumulocityConfig(thinEdgeConfig);
           if (c8yConfig) {
             this.loadAndDisplayTrustAnchor(c8yConfig);
@@ -103,7 +116,7 @@ export class CertificateWidgetComponent {
           expirationDate: expirationDate.toISOString(),
           isActive: this.isActive(certToShow)
         };
-        this.currentCertificate = certToShow;
+        this.keynoaRawData.certificate = certToShow;
       } else {
         throw new Error('No certificates available.')
       }
@@ -152,6 +165,7 @@ export class CertificateWidgetComponent {
         const apps = await this.devityProxy.getAppInstances(guid);
         const thinEdgeApp = apps.find(app => app.configType === 'thin-edge');
         if (thinEdgeApp) {
+          this.keynoaRawData.app = thinEdgeApp;
           const thinEdgeConfig = await this.devityProxy.getThinEdgeConfig(thinEdgeApp.localConfigId);
           return thinEdgeConfig;
         } else {
@@ -166,7 +180,7 @@ export class CertificateWidgetComponent {
     revoke() {
        this.certActionService.revoke(
         this.issuingCA.caCertificateId, 
-        this.currentCertificate.certificateSerialNumber
+        this.keynoaRawData.certificate.certificateSerialNumber
       ).then((res) => {
         if (res.status === 'success') {
           this.refresh();
@@ -176,6 +190,20 @@ export class CertificateWidgetComponent {
       });
     }
 
-    
+    move() {
+      this.certActionService.move(
+        this.keynoaRawData.app,
+        this.keynoaRawData.device
+      ).then((res) => {
+        if (res.status === 'success') {
+          this.refresh();
+        } else if (res.status === 'error') {
+          console.error(res.error);
+        }
+      });
+    }
 
+    renew() {
+
+    }
 }

@@ -4,6 +4,7 @@ import { BsModalService } from "ngx-bootstrap/modal";
 import { DevityProxyService } from "./devity-proxy.service";
 import { CertificateMoveModalComponent } from "~apps/devicemanagement/src/app/plugin/components/certificate-move-modal/certificate-move-modal.component";
 import { firstValueFrom } from "rxjs";
+import { DevityDevice, DevityDeviceApp } from "~models/rest-reponse.model";
 
 export type ActionResult = { status: 'success' | 'canceled' } | { status: 'error', error: unknown };
 
@@ -63,11 +64,23 @@ export class CertificateActionService {
           }
     }
 
-    async move(): Promise<ActionResult> {
-        const ref = this.bsModalService.show(CertificateMoveModalComponent);
-        const url = await firstValueFrom(ref.content.closeSubject);
-        if (url) {
-            return { status: 'success' };
+    async move(
+        app: DevityDeviceApp, 
+        device: DevityDevice): Promise<ActionResult> {
+        const configs = await this.devityProxyService.getThinEdgeConfigs();
+        const ref = this.bsModalService.show(CertificateMoveModalComponent, { initialState: {
+            configs,
+            selectedConfigId: app.localConfigId
+        } });
+        const config = await firstValueFrom(ref.content.closeSubject);
+        if (config) {
+            try {
+                debugger;
+                await this.devityProxyService.moveDevice(app.appInstanceId, device.guid, config.id)
+                return { status: 'success' };
+            } catch(e) {
+                return { status: 'error', error: e };
+            }
         } else {
             return { status: 'canceled' };
         }
