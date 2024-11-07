@@ -18,6 +18,8 @@ import { CertificateListComponent } from './components/certificate-list/certific
 import { CertificateConfigWidgetComponent } from './components/certificate-widget/certificate-widget-config.component';
 import { CertificateWidgetComponent } from './components/certificate-widget/certificate-widget.component';
 import { DevityDeviceDetails } from './components/device-details/device-details.component';
+import { IntervalRefreshComponent } from "~components/interval/interval-refresh.component";
+import { SPSLoadingComponent } from '~components/loading/loading.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,9 @@ import { DevityDeviceDetails } from './components/device-details/device-details.
     FormlyModule.forChild(),
     TooltipModule,
     CollapseModule,
-  ],
+    IntervalRefreshComponent,
+    SPSLoadingComponent
+],
   declarations: [
     DevityDeviceDetails,
     CertificateWidgetComponent,

@@ -109,9 +109,7 @@ export class CertificateListComponent implements OnInit {
     try {
       await this.devityProxyService.revokeCertificate(
         certificateRow.issuingCaId,
-        {
-          serial_number: certificateRow.certificateSerialNumber,
-        }
+        certificateRow.certificateSerialNumber,
       );
 
       this.alertService.success(

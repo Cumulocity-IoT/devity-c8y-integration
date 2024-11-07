@@ -1,19 +1,28 @@
 <div class="inner-scroll">
     <div class="d-flex d-col fit-min-h">
+        <div class="card-header separator-top separator-bottom">
+            <div class="fit-w d-flex a-i-center fit-h-20 m-l-auto">
+                <interval-refresh 
+                [isLoading$]="isLoading$"
+                [isIntervalToggleEnabled]="true"
+                (onCountdownEnded)="refresh()">
+                </interval-refresh>
+            </div>
+        </div>
       <div class="card-block bg-level-0 p-t-0">
         <div class="text-center">
-            <div class="d-flex a-i-center m-16 p-b-0 j-c-center">
+            <div class="d-flex a-i-center m-16 p-b-0 j-c-center animated fadeIn" *ngIf="didFinishLoading">
                 <span>
                     <i 
-                        c8yIcon="{{ (didFinishLoading && !cert) ? 'unverified-account' : cert.isActive ? 'approval' : 'exclamation-circle'}}" 
+                        c8yIcon="{{ !cert ? 'unverified-account' : cert?.isActive ? 'approval' : 'exclamation-circle'}}" 
                         class="c8y-icon icon-32" 
-                        ngClass="{{ (didFinishLoading && !cert) ? 'text-info' : cert.isActive ? 'text-success' : 'text-danger'}}">
+                        ngClass="{{ !cert ? 'text-info' : cert?.isActive ? 'text-success' : 'text-danger'}}">
                     </i>
                 </span>
-                <p class="text-bold">{{ (didFinishLoading && !cert) ? 'No certificate found.' : (cert.isActive ? 'Active' : 'Expired') | translate}}</p>
+                <p class="text-bold">{{ !cert ? 'No certificate found.' : (cert?.isActive ? 'Active' : 'Expired') | translate}}</p>
             </div>
         
-            <span *ngIf="cert">
+            <span *ngIf="didFinishLoading && cert" class="text-truncate animated fadeIn">
                 <p>
                     <b>Application:</b> {{ cert.application }}
                 </p>
@@ -34,11 +43,11 @@
             </span>
             
         </div>
-        <c8y-loading *ngIf="isLoading"></c8y-loading>        
+        <sps-loading *ngIf="isLoading$ | async"></sps-loading>        
       </div>
 
       <div class="card-block m-t-auto separator-top bg-level-1 p-t-0 p-b-8">
-        <fieldset class="c8y-fieldset" *ngIf="issuingCA">
+        <fieldset class="c8y-fieldset animated fadeIn" *ngIf="issuingCA">
             <legend translate="">Issuing CA</legend>
             <div class="form-horizontal m-t-4">
                 <div class="form-group m-b-0">
@@ -56,7 +65,7 @@
             </div>
         </fieldset>
 
-        <fieldset class="c8y-fieldset" *ngIf="trustAnchor">
+        <fieldset class="c8y-fieldset animated fadeIn" *ngIf="trustAnchor">
             <legend translate="">Trust Anchor (Primary) - in use</legend>
             <div class="form-horizontal m-t-4">
                 <div class="form-group m-b-0">
@@ -78,7 +87,7 @@
             <p class="col-xs-5 text-12 p-0 text-medium flex-no-shrink" ng-hide="vm.isEditMode" translate="">Required interval</p>
         </div> -->
 
-        <div class="btn-group-justified btn-group-sm p-t-8 separator-top device-status-btn" role="group">
+        <div class="btn-group-justified btn-group-sm p-t-8 separator-top device-status-btn animated fadeIn" role="group">
             <button class="btn btn-default" title="{{ 'Renew' | translate }}" (click)="renew()" [disabled]="!cert">
                 <i c8yIcon="reset"></i>
                 <span translate>Renew</span>

@@ -3,10 +3,11 @@ import { ActivatedRoute } from "@angular/router";
 import { IManagedObject } from "@c8y/client";
 import { BsModalService } from "ngx-bootstrap/modal";
 import { CertificateMoveModalComponent } from "../certificate-move-modal/certificate-move-modal.component";
-import { firstValueFrom } from "rxjs";
+import { BehaviorSubject, firstValueFrom } from "rxjs";
 import { gettext, ModalService, Status } from "@c8y/ngx-components";
 import { DevityProxyService } from "~services/devity-proxy.service";
-import { maxBy } from "lodash";
+import { isNil, maxBy } from "lodash";
+import { CumulocityConfiguration, DevityDevice, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
 
 @Component({
     templateUrl: './certificate-widget.component.html',
@@ -34,7 +35,7 @@ export class CertificateWidgetComponent {
       expirationDate: string;
     }
       
-      isLoading = false;
+      isLoading$ = new BehaviorSubject<boolean>(false);
       didFinishLoading = false;
 
     constructor(
@@ -44,52 +45,119 @@ export class CertificateWidgetComponent {
         private devityProxy: DevityProxyService) {
         this.device = route.snapshot.parent?.data["contextData"];
 
-        this.isLoading = true;
-        this.loadKeynoaData().finally(() => {
-          this.isLoading = false;
+        this.refresh();
+    }
+
+    refresh(onlyDisplayCert = false) {
+      this.didFinishLoading = false;
+      this.isLoading$.next(true);
+        this.loadKeynoaData(onlyDisplayCert).finally(() => {
+          this.isLoading$.next(false);
           this.didFinishLoading = true;
         });
     }
 
-    private async loadKeynoaData() {
+    private isActive(cert: DevityDeviceCertificate) {
+        const now = new Date();
+        const expirationDate = new Date(cert.expiredAt);
+        const isActive = now < expirationDate && (isNil(cert.revokedAt) || now < new Date(cert.revokedAt));
+        return isActive;
+    }
+
+    private async loadKeynoaData(onlyDisplayCert = false) {
       const devices = await this.devityProxy.getDevices();
       const keynoaDevice = devices.find(d => d.serialNumber === this.device.name);
       const guid = keynoaDevice?.guid;
       if (!guid) { return; }
-      const certs = await this.devityProxy.getCertificates(guid);
-      // find the most recent cert
-      const newestCert = maxBy(certs, (cert) => cert.issuedAt);
+      this.loadAndDisplayCert(guid);
+      if (!onlyDisplayCert) {
+        const thinEdgeConfig = await this.loadThinEdgeConfig(guid);
+        if (thinEdgeConfig) {
+          const c8yConfig = await this.loadCumulocityConfig(thinEdgeConfig);
+          if (c8yConfig) {
+            this.loadAndDisplayTrustAnchor(c8yConfig);
+            this.loadAndDisplayCertificateAuth(c8yConfig);
+          }
+        }
+      }
+    }
 
-      const expirationDate = new Date(newestCert.expiredAt);
-      const now = new Date();
-      // TODO: find out how to determine whether its active or not
-      const isActive = expirationDate > now;
-      this.cert = {
-        application: newestCert.appInstanceId,
-        serialNumber: newestCert.certificateSerialNumber,
-        authority: newestCert.caFingerprint,
-        issueDate: new Date(newestCert.issuedAt).toISOString(),
-        expirationDate: expirationDate.toISOString(),
-        isActive
-      };
+    private async loadAndDisplayCert(guid: DevityDevice['guid']) {
+      try {
+        const certs = await this.devityProxy.getCertificates(guid);
+        const activeCerts = certs.filter(cert => this.isActive(cert));
+        let certToShow: DevityDeviceCertificate;
+        if (activeCerts.length) {
+          certToShow = maxBy(activeCerts, (cert) => cert.issuedAt);
+        } else if(certs.length) {
+          certToShow = maxBy(certs, (cert) => cert.issuedAt);
+        }
 
-      const apps = await this.devityProxy.getAppInstances(guid);
-      const thinEdgeApp = apps.find(app => app.configType === 'thin-edge');
-      if (thinEdgeApp) {
-        const thinEdgeConfig = await this.devityProxy.getThinEdgeConfig(thinEdgeApp.localConfigId);
+      if (certToShow) {
+        const expirationDate = new Date(certToShow.expiredAt);
+        this.cert = {
+          application: certToShow.appInstanceId,
+          serialNumber: certToShow.certificateSerialNumber,
+          authority: certToShow.caFingerprint,
+          issueDate: new Date(certToShow.issuedAt).toISOString(),
+          expirationDate: expirationDate.toISOString(),
+          isActive: this.isActive(certToShow)
+        };
+      } else {
+        throw new Error('No certificates available.')
+      }
+      } catch(e) {
+        console.error('Could not load device certificate.', e);
+      }
+    }
+
+    private async loadCumulocityConfig(thinEdgeConfig: ThinEdgeConfiguration): Promise<CumulocityConfiguration | undefined> {
+      try {
         const c8yConfig = await this.devityProxy.getCumulocityConfig(thinEdgeConfig.cumulocityConfigurationId);
-        
+        return c8yConfig;
+      } catch (e) {
+        console.error('Could not load Cumulocity Config.', e);
+        return undefined;
+      }
+    }
+
+    private async loadAndDisplayTrustAnchor(c8yConfig: CumulocityConfiguration) {
+      try {
         const trustAnchor = await this.devityProxy.getTrustAnchor(c8yConfig.cloudCaFingerprintPrimary);
         this.trustAnchor = {
           subjectCN: trustAnchor.subjectCn,
           expirationDate: trustAnchor.expirationTime
         };
+      } catch(e) {
+        console.error('Could not load Trust Anchor.', e);
+      }
+    }
 
+    private async loadAndDisplayCertificateAuth(c8yConfig: CumulocityConfiguration) {
+      try {
         const certificateAuthority = await this.devityProxy.getCertificateAuthority(c8yConfig.caId);
         this.issuingCA = {
           subjectCN: certificateAuthority.subjectCn,
           expirationDate: certificateAuthority.expirationTime,
         };
+      } catch(e) {
+        console.error('Could not load Certificate Authority.', e);
+      }
+    }
+
+    private async loadThinEdgeConfig(guid: DevityDevice['guid']) {
+      try {
+        const apps = await this.devityProxy.getAppInstances(guid);
+        const thinEdgeApp = apps.find(app => app.configType === 'thin-edge');
+        if (thinEdgeApp) {
+          const thinEdgeConfig = await this.devityProxy.getThinEdgeConfig(thinEdgeApp.localConfigId);
+          return thinEdgeConfig;
+        } else {
+          throw new Error('Could not find thin-edge app in /appInstances');
+        }
+      } catch(e) {
+        console.error('Could not load thin-edge config.', e);
+        return undefined;
       }
     }
 
