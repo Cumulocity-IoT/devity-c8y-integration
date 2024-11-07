@@ -31,55 +31,53 @@ export interface DevityDeviceCertificate {
 }
 
 export interface DevityDeviceApp {
-    deviceGuid: string;
-    appInstanceId: string;
-    configType: string;
-    localConfigId: number;
+  deviceGuid: string;
+  appInstanceId: string;
+  configType: string;
+  localConfigId: number;
 }
 
 export interface CumulocityConfiguration {
-    id: number;
-    c8yUrl: string;
-    caId: number;
-    cloudCaFingerprintPrimary: string;
-    cloudCaFingerprintSecondary?: string | null;
-  }
-  export interface ThinEdgeConfiguration {
-    id: number;
-    cumulocityConfigurationId: number;
-    templateName: string;
-    certificateTemplateId: number;
-    deviceSelector?: any | null;
-    cumulocityConfiguration?: CumulocityConfiguration | null;
-  }
+  id: number;
+  c8yUrl: string;
+  caId: number;
+  cloudCaFingerprintPrimary: string;
+  cloudCaFingerprintSecondary?: string | null;
+}
+export interface ThinEdgeConfiguration {
+  id: number;
+  cumulocityConfigurationId: number;
+  templateName: string;
+  certificateTemplateId: number;
+  deviceSelector?: any | null;
+  cumulocityConfiguration?: CumulocityConfiguration | null;
+}
 
-  export interface CaCertificateDto {
-    caCertificateId: number;
-    certificate: string;
-    fingerprint: string;
-    issuerCaFingerprint: string | null;
-    algorithm: string;
-    issuerCn: string;
-    subjectCn: string;
-    subOrganization: string | null;
-    expirationTime: string;
-  }
-  
-  export interface TrustAnchorCertificate {
-    caCertificateId: number;
-    certificate: string;
-    fingerprint: string;
-    issuerCaFingerprint: string | null;
-    algorithm: string;
-    issuerCn: string;
-    subjectCn: string;
-    subOrganization: string;
-    expirationTime: string;
-    crlDistributionUrl: string | null;
-  }
-  
+export interface CaCertificateDto {
+  caCertificateId: number;
+  certificate: string;
+  fingerprint: string;
+  issuerCaFingerprint: string | null;
+  algorithm: string;
+  issuerCn: string;
+  subjectCn: string;
+  subOrganization: string | null;
+  expirationTime: string;
+}
 
-  
+export interface TrustAnchorCertificate {
+  caCertificateId: number;
+  certificate: string;
+  fingerprint: string;
+  issuerCaFingerprint: string | null;
+  algorithm: string;
+  issuerCn: string;
+  subjectCn: string;
+  subOrganization: string;
+  expirationTime: string;
+  crlDistributionUrl: string | null;
+}
+
 export interface DevityCertificateData {
   csr: string | null;
   certificate: string;
@@ -104,7 +102,7 @@ export const DevityCertificateStatus = {
   VALID: 'valid',
   EXPIRED: 'expired',
   REVOKED: 'revoked',
-  UNKNOWN: 'unknown'
+  UNKNOWN: 'unknown',
 };
 export type DevityCertificateStatus =
   (typeof DevityCertificateStatus)[keyof typeof DevityCertificateStatus];
