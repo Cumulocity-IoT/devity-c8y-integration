@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MicroserviceService } from './microservice.service';
 import {
   CaCertificateDto,
   CumulocityConfiguration,
@@ -10,12 +9,13 @@ import {
   ThinEdgeConfiguration,
   TrustAnchorCertificate,
 } from '~models/rest-reponse.model';
+import { MicroserviceService } from './microservice.service';
 
 export type ProxyRequest = {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers: { [key: string]: string };
-  body: string | null;
+  body: string | null | object;
 };
 
 export type ProxyResponse<T> = {
@@ -30,16 +30,20 @@ export class DevityProxyService {
   constructor(private ms: MicroserviceService) {}
 
   revokeCertificate(
-    issuingCaId: string, 
-    body: { 
-        serial_number: DevityDeviceCertificate['certificateSerialNumber']  
-    } | { certificate: unknown }) {
+    issuingCaId: string,
+    certificateSerialNumber: DevityDeviceCertificate['certificateSerialNumber']
+  ) {
     const url = `/issuingCAs/${issuingCaId}/revoke`;
     const request: ProxyRequest = {
       url,
       method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: JSON.stringify(body),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: {
+        serialNumber: certificateSerialNumber,
+      },
     };
     return this.proxy(request);
   }
