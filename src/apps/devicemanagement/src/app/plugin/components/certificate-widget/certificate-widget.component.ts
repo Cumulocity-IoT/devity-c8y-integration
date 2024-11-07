@@ -13,6 +13,7 @@ import { maxBy } from "lodash";
     styleUrl: './certificate-widget.component.less'
 })
 export class CertificateWidgetComponent {
+  // TODO: add polling as needed for revoke
     device: IManagedObject;
     cert?: { 
       application: string,
@@ -90,10 +91,6 @@ export class CertificateWidgetComponent {
           expirationDate: certificateAuthority.expirationTime,
         };
       }
-
-      // this.devityProxy.getCertificateAuthorities().then(cas => {
-      //   console.log(cas);
-      // });
     }
 
     async revoke() {
