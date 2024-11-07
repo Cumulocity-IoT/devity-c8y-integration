@@ -101,6 +101,7 @@ export class CertificateListComponent implements OnInit {
 
   async renew(certificateRow: Row): Promise<void> {
     console.log('renew', certificateRow);
+    this.alertService.info('Not Yet Implemented');
   }
 
   async revoke(certificateRow: Row): Promise<void> {
@@ -109,9 +110,7 @@ export class CertificateListComponent implements OnInit {
     try {
       await this.devityProxyService.revokeCertificate(
         certificateRow.issuingCaId,
-        {
-          serial_number: certificateRow.certificateSerialNumber,
-        }
+        certificateRow.certificateSerialNumber
       );
 
       this.alertService.success(
