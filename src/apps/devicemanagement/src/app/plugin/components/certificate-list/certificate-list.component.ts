@@ -105,8 +105,6 @@ export class CertificateListComponent implements OnInit {
   }
 
   async revoke(certificateRow: Row): Promise<void> {
-    console.log('revoke', certificateRow);
-
     try {
       await this.devityProxyService.revokeCertificate(
         certificateRow.issuingCaId,
@@ -116,6 +114,8 @@ export class CertificateListComponent implements OnInit {
       this.alertService.success(
         `Certificate ${certificateRow.certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
       );
+
+      void this.reload();
     } catch (error) {
       this.alertService.danger('Could not revoke Certificate', error as string);
       console.error(error);
