@@ -107,10 +107,14 @@ export class CertificateListComponent implements OnInit {
     console.log('revoke', certificateRow);
 
     try {
-      const res = await this.devityProxyService.revokeCertificate(
-        certificateRow.certificateSerialNumber
+      await this.devityProxyService.revokeCertificate(
+        certificateRow.issuingCaId,
+        {
+          serial_number: certificateRow.device.devity.serialNumber,
+          certificate: certificateRow.certificateSerialNumber,
+        }
       );
-      console.log(res);
+
       this.alertService.success(
         `Certificate ${certificateRow.certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
       );
@@ -205,7 +209,11 @@ export class CertificateListComponent implements OnInit {
       // pushing additional data into the certificate MO
       return {
         ...row,
-        ...{ device, authoritySubjectCn: authority?.subjectCn },
+        ...{
+          device,
+          authoritySubjectCn: authority?.subjectCn,
+          issuingCaId: authority?.caId,
+        },
       } as Row;
     });
   }
