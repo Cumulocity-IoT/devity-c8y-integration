@@ -11,6 +11,7 @@ import {
 } from '@c8y/ngx-components';
 import { FormlyModule } from '@ngx-formly/core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CERTIFICATES_LIST_PATH } from '~models/app-dm.model';
 import { assetPaths } from '../../assets/assets';
 import { CertificateListComponent } from './components/certificate-list/certificate-list.component';
@@ -25,6 +26,7 @@ import { DevityDeviceDetails } from './components/device-details/device-details.
     RouterModule,
     FormsModule,
     FormlyModule.forChild(),
+    TooltipModule,
     CollapseModule,
   ],
   declarations: [
