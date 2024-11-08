@@ -34,19 +34,19 @@
         <span translate>active certificates</span>
       </li>
       <li class="card">
-        <em>{{ stats?.active | number }}</em>
+        <em>{{ stats?.expiring['lt2d']| number }}</em>
         <span translate>certificates will expire in<br>the next 48 hours</span>
       </li>
       <li class="card">
-        <em>{{ stats?.active | number }}</em>
+        <em>{{ stats?.expiring['lt7d'] | number }}</em>
         <span translate>certificates will expire in<br>the next 7 days</span>
       </li>
       <li class="card">
-        <em>{{ stats?.active | number }}</em>
+        <em>{{ stats?.expired['lt7d'] | number }}</em>
         <span translate>certificates have expired in<br>the last 7 days</span>
       </li>
       <li class="card">
-        <em>{{ stats?.active | number }}</em>
+        <em>{{ stats?.revokes['lt7d'] | number }}</em>
         <span translate>certificates got revoked within<br>the last 7 days</span>
       </li>
     }
