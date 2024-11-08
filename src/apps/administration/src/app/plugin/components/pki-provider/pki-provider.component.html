@@ -39,11 +39,11 @@
       </div>
     </div>
     <div class="col-md-8">
-      <div class="p-16" [class.card]="id">
+      <div [class.card]="id">
         @if (id) {
           <devity-certificate-authority-list [id]="id"></devity-certificate-authority-list>
         } @else {
-          <span class="text-muted">Please Select a PKI Provide on the left</span>
+          <span class="text-muted p-16">Please Select a PKI Provide on the left</span>
         }
       </div>
     </div>

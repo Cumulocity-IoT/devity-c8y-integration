@@ -1,3 +1,13 @@
-<p>
-  certificate-authority-list works! {{ id }}
-</p>
+<div class="card-header d-flex separator-bottom">
+  <h3 class="flex-grow">{{ id }}</h3>
+
+  <a [routerLink]="['/auth-configuration', 'pki-provider']">
+    <i [c8yIcon]="'close'"></i>
+  </a>
+</div>
+
+<div class="card-block p-t-16">
+  <p>
+    certificate-authority-list works!
+  </p>
+</div>
