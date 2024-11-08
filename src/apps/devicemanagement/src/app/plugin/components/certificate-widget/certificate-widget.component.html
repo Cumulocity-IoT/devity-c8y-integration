@@ -11,7 +11,7 @@
         </div>
       <div class="card-block bg-level-0 p-t-0">
         <div class="text-center">
-            <div class="d-flex a-i-center m-16 p-b-0 j-c-center animated fadeIn" *ngIf="didFinishLoading">
+            <div class="d-flex a-i-center m-16 p-b-0 p-t-16 j-c-center animated fadeIn" *ngIf="didFinishLoading">
                 <span>
                     <i 
                         c8yIcon="{{ !cert ? 'unverified-account' : cert?.isActive ? 'approval' : 'exclamation-circle'}}" 
@@ -21,10 +21,58 @@
                 </span>
                 <p class="text-bold">{{ !cert ? 'No certificate found.' : (cert?.isActive ? 'Active' : 'Expired') | translate}}</p>
             </div>
+        </div>
+
+        <ul *ngIf="didFinishLoading && cert" class="list-unstyled small text-ellipsis m-l-32 m-r-32 animated fadeIn">
+            <li class="p-t-4 p-b-4 d-flex separator-bottom">
+              <label class="small m-b-0 m-r-8 a-s-start">
+                Application
+              </label>
+              <span class="m-l-auto">
+                {{ cert.application }}
+              </span>
+            </li>
+
+            <li class="p-t-4 p-b-4 d-flex separator-bottom">
+                <label class="small m-b-0 m-r-8 a-s-start">
+                    Cert serial number
+                </label>
+                <span class="m-l-auto">
+                  {{ cert.serialNumber }}
+                </span>
+              </li>
+
+              <li class="p-t-4 p-b-4 d-flex separator-bottom">
+                <label class="small m-b-0 m-r-8 a-s-start">
+                    Issuing CA
+                </label>
+                <span class="m-l-auto dotted-text">
+                    {{ cert.authority }}
+                </span>
+              </li>
+
+              <li class="p-t-4 p-b-4 d-flex separator-bottom">
+                <label class="small m-b-0 m-r-8 a-s-start">
+                    Issue date
+                </label>
+                <span class="m-l-auto">
+                    {{ cert.issueDate | c8yDate }}
+                </span>
+              </li>
+
+              <li class="p-t-4 p-b-4 d-flex separator-bottom">
+                <label class="small m-b-0 m-r-8 a-s-start">
+                    Expiration date
+                </label>
+                <span class="m-l-auto">
+                    {{ cert.expirationDate | c8yDate }}
+                </span>
+              </li>
+          </ul>
         
-            <span *ngIf="didFinishLoading && cert" class="text-truncate animated fadeIn">
+            <!-- <span *ngIf="didFinishLoading && cert" class="text-truncate animated fadeIn">
                 <p>
-                    <b>Application:</b> {{ cert.application }}
+                    <b>Application:</b> 
                 </p>
                 <p>
                     <b>Cert serial number:</b> {{ cert.serialNumber }}
@@ -40,11 +88,10 @@
                     <i c8y-icon="calendar" class="m-r-4 dlt-c8y-icon-calendar"></i>
                     <b>Expiration date:</b> {{ cert.expirationDate | c8yDate }}
                 </p>
-            </span>
+            </span> -->
             
-        </div>
         <sps-loading *ngIf="isLoading$ | async"></sps-loading>        
-      </div>
+    </div>
 
       <div class="card-block m-t-auto separator-top bg-level-1 p-t-0 p-b-8">
         <fieldset class="c8y-fieldset animated fadeIn" *ngIf="issuingCA">
