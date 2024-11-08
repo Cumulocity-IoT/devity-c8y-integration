@@ -1,5 +1,5 @@
 <div class="card-header d-flex separator-bottom">
-  <h3 class="flex-grow">#{{ _providerId }}</h3>
+  <h3 class="flex-grow">Certificate Authorities of #{{ _providerId }}</h3>
 
   <a [routerLink]="['/auth-configuration', 'pki-provider']">
     <i [c8yIcon]="'close'"></i>
@@ -15,6 +15,6 @@
     [pagination]="pagination"
     [showSearch]="false"
     [actionControls]="actions"
-    [displayOptions]="{ bordered: true, gridHeader: true, filter: true, striped: true, hover: true }">
+    [displayOptions]="{ bordered: true, gridHeader: false, filter: false, striped: true, hover: true }">
   </c8y-data-grid>
 </div>
