@@ -38,6 +38,10 @@ export class KeynoaService {
     )?.data as PKIProvider[];
   }
 
+   getProvider(id: string | number): Promise<PKIProvider> {
+    return this.inventoryService.detail(id).then(res => res.data as PKIProvider);
+  }
+
   async set(provider: Partial<PKIProvider>): Promise<PKIProvider> {
     let response: IResult<PKIProvider>;
 
@@ -73,8 +77,4 @@ export class KeynoaService {
 
     return url;
   }
-
-  getCAId(): number {
-    throw new Error("Method not implemented.");
-}
 }

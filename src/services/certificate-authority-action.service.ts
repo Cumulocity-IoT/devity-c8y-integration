@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { AlertService, gettext, ModalService, Status } from "@c8y/ngx-components";
 import { DevityProxyService } from "./devity-proxy.service";
-import { CertificateAuthorityConfig } from "~models/rest-reponse.model";
+import { CertificateAuthorityConfig, DevityCertificateData } from "~models/rest-reponse.model";
+import { saveAs } from 'file-saver';
 
 export type ActionResult = { status: 'success' | 'canceled' } | { status: 'error', error: unknown };
 
@@ -9,7 +10,7 @@ export type ActionResult = { status: 'success' | 'canceled' } | { status: 'error
     providedIn: 'root'
 })
 export class CertificateAuhtorityActionService {
-
+    
     constructor(
         private modal: ModalService,
         private alertService: AlertService,
@@ -52,5 +53,10 @@ export class CertificateAuhtorityActionService {
         } catch (e) {
             return { status: 'canceled' };
         }
+    }
+
+    download(cert: DevityCertificateData) {
+        let blob = new Blob([cert.certificate], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, `${cert.subjectCn}.pem`);
     }
 }
