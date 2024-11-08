@@ -59,10 +59,10 @@ export class CertificateWidgetComponent {
         this.refresh();
     }
 
-    refresh(onlyDisplayCert = false) {
+    refresh() {
       this.didFinishLoading = false;
       this.isLoading$.next(true);
-        this.loadKeynoaData(onlyDisplayCert).finally(() => {
+        this.loadKeynoaData().finally(() => {
           this.isLoading$.next(false);
           this.didFinishLoading = true;
         });
@@ -75,22 +75,20 @@ export class CertificateWidgetComponent {
         return isActive;
     }
 
-    private async loadKeynoaData(onlyDisplayCert = false) {
+    private async loadKeynoaData() {
       const devices = await this.devityProxy.getDevices();
       const keynoaDevice = devices.find(d => d.serialNumber === this.device.name);
       const guid = keynoaDevice?.guid;
       if (!guid) { return; }
       this.keynoaRawData.device = keynoaDevice;
       this.loadAndDisplayCert(guid);
-      if (!onlyDisplayCert) {
-        const thinEdgeConfig = await this.loadThinEdgeConfig(guid);
-        if (thinEdgeConfig) {
-          this.keynoaRawData.config = thinEdgeConfig;
-          const c8yConfig = await this.loadCumulocityConfig(thinEdgeConfig);
-          if (c8yConfig) {
-            this.loadAndDisplayTrustAnchor(c8yConfig);
-            this.loadAndDisplayCertificateAuth(c8yConfig);
-          }
+      const thinEdgeConfig = await this.loadThinEdgeConfig(guid);
+      if (thinEdgeConfig) {
+        this.keynoaRawData.config = thinEdgeConfig;
+        const c8yConfig = await this.loadCumulocityConfig(thinEdgeConfig);
+        if (c8yConfig) {
+          this.loadAndDisplayTrustAnchor(c8yConfig);
+          this.loadAndDisplayCertificateAuth(c8yConfig);
         }
       }
     }
