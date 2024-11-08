@@ -1,12 +1,11 @@
-<formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+THis is filter!
 
 <div class="data-grid__dropdown__footer d-flex separator-top">
-  <button class="btn btn-default btn-sm m-r-8 flex-grow" (click)="resetFilter()"
-    title="{{ 'grid.button-filter-reset' | translate }}">
-    {{ 'grid.button-filter-reset' | translate }}
+  <button class="btn btn-default btn-sm m-r-8 flex-grow" (click)="resetFilter()">
+    {{ 'Reset' | translate }}
   </button>
-  <button class="btn btn-primary btn-sm flex-grow" [disabled]="form.invalid" (click)="applyFilter()"
-    title="{{ 'grid.button-filter-apply' | translate }}">
-    {{ 'grid.button-filter-apply' | translate }}
+
+  <button class="btn btn-primary btn-sm flex-grow" (click)="applyFilter()">
+    {{ 'Apply' | translate }}
   </button>
 </div>

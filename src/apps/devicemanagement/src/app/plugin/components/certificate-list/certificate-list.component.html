@@ -1,22 +1,54 @@
 <c8y-title>{{ 'Certificates' | translate }}</c8y-title>
 
-<div class="content-fullpage grid-wrapper">
-  <c8y-data-grid
-    [title]="'Certificates' | translate"
-    [columns]="columns"
-    [rows]="rows"
-    [pagination]="pagination"
-    [actionControls]="actionControls"
-    [bulkActionControls]="[]"
-    [selectable]="false"
-    [loading]="isLoading"
-    (onReload)="reload()"
-  >
-    <c8y-ui-empty-state
-      [icon]="'search'"
-      [title]="'No results to display.' | translate"
-      [subtitle]="'Refine your search terms or check your spelling.' | translate"
-      [horizontal]="true"
-    ></c8y-ui-empty-state>
-  </c8y-data-grid>
+<div class="content-fullpage wrapper">
+  <div class="grid-wrap card">
+    <c8y-data-grid
+      class="card"
+      [title]="'Certificates' | translate"
+      [columns]="columns"
+      [rows]="rows"
+      [pagination]="pagination"
+      [actionControls]="actionControls"
+      [bulkActionControls]="[]"
+      [selectable]="false"
+      [loading]="isLoading"
+      (onReload)="reload()"
+    >
+      <c8y-ui-empty-state
+        [icon]="'search'"
+        [title]="'No results to display.' | translate"
+        [subtitle]="'Refine your search terms or check your spelling.' | translate"
+        [horizontal]="true"
+      ></c8y-ui-empty-state>
+    </c8y-data-grid>
+  </div>
+
+  <ul class="stats">
+    @if (isStatsLoading) {
+      <li class="loading">
+        <c8y-loading></c8y-loading>
+      </li>
+    } @else {
+      <li class="card">
+        <em>{{ stats?.active | number }}</em>
+        <span translate>active certificates</span>
+      </li>
+      <li class="card">
+        <em>{{ stats?.active | number }}</em>
+        <span translate>certificates will expire in<br>the next 48 hours</span>
+      </li>
+      <li class="card">
+        <em>{{ stats?.active | number }}</em>
+        <span translate>certificates will expire in<br>the next 7 days</span>
+      </li>
+      <li class="card">
+        <em>{{ stats?.active | number }}</em>
+        <span translate>certificates have expired in<br>the last 7 days</span>
+      </li>
+      <li class="card">
+        <em>{{ stats?.active | number }}</em>
+        <span translate>certificates got revoked within<br>the last 7 days</span>
+      </li>
+    }
+  </ul>
 </div>

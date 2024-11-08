@@ -21,6 +21,19 @@ interface UnionDevice extends IManagedObject {
   devity: DevityDevice;
 }
 
+interface CertificateStats {
+  active: number;
+  expiring: {
+    [key: string]: number;
+  };
+  expired: {
+    [key: string]: number;
+  };
+  revoked: {
+    [key: string]: number;
+  };
+}
+
 @Component({
   selector: 'certificate-list',
   templateUrl: './certificate-list.component.html',
@@ -28,6 +41,7 @@ interface UnionDevice extends IManagedObject {
 })
 export class CertificateListComponent implements OnInit {
   isLoading = true;
+  isStatsLoading = true;
 
   // datagrid
   rows: Row[] = [];
@@ -57,6 +71,10 @@ export class CertificateListComponent implements OnInit {
     },
   ];
 
+  // certificate stats
+  stats: CertificateStats = null;
+  lastUpdated: Date;
+
   private c8yDevices: IManagedObject[];
   private devityDevices: DevityDevice[];
   private unionDevices: UnionDevice[];
@@ -76,6 +94,7 @@ export class CertificateListComponent implements OnInit {
 
   async reload(): Promise<void> {
     this.isLoading = true;
+    this.isStatsLoading = true;
     // get all devices from all sources
     [this.c8yDevices, this.devityDevices, this.authorities] = await Promise.all(
       [
@@ -89,6 +108,9 @@ export class CertificateListComponent implements OnInit {
     // get certificates per device
     this.certificates = await this.fetchDevityCerificates();
     this.rows = this.generateRows();
+    this.isLoading = false;
+
+    this.stats = await this.fetchStats(),
 
     console.log('reload', {
       c8yDevices: this.c8yDevices,
@@ -97,8 +119,11 @@ export class CertificateListComponent implements OnInit {
       certificates: this.certificates,
       authorities: this.authorities,
       rows: this.rows,
+      stats: this.stats,
     });
-    this.isLoading = false;
+
+    this.lastUpdated = new Date();
+    this.isStatsLoading = false;
   }
 
   async renew(certificateRow: Row): Promise<void> {
@@ -107,9 +132,11 @@ export class CertificateListComponent implements OnInit {
   }
 
   revoke(certificateRow: Row): void {
-    this.certActionService.revoke(
-      certificateRow.issuingCaId, 
-      certificateRow.certificateSerialNumber)
+    this.certActionService
+      .revoke(
+        certificateRow.issuingCaId,
+        certificateRow.certificateSerialNumber
+      )
       .then((res) => {
         if (res.status === 'success') {
           void this.reload();
@@ -159,6 +186,74 @@ export class CertificateListComponent implements OnInit {
     }
 
     return [];
+  }
+
+  private async fetchStats(
+    authorities = this.authorities
+  ): Promise<CertificateStats> {
+    console.log('fetchStats', authorities);
+
+    const stats = {
+      active: 0,
+      expiring: {
+        lt2d: 0,
+        lt7d: 0,
+      },
+      expired: {
+        lt7d: 0,
+      },
+      revoked: {
+        lt7d: 0,
+      },
+    };
+    const requests = [];
+
+    authorities.forEach((auth) =>
+      requests.push(
+        this.devityProxyService.getValidCertificates(auth.fingerprint),    // 0
+        this.devityProxyService.getExpiringCertificates(auth.fingerprint, 2), // 1
+        this.devityProxyService.getExpiringCertificates(auth.fingerprint, 7), // 2
+        this.devityProxyService.getExpiredCertificates(auth.fingerprint, 7),  // 3
+        this.devityProxyService.getRevokedCertificates(auth.fingerprint, 7)   // 4
+      )
+    );
+
+    try {
+      const responses = await Promise.all(requests);
+      console.log('responses', responses);
+
+      responses.forEach((auth, index) => {
+        console.log(auth, index % 5);
+        switch (index % 5) {
+          case 0:
+            // getValidCertificates
+            stats.active += auth.length;
+            break;
+          case 1:
+            // getExpiringCertificates 2d
+            stats.expiring['lt2d'] += auth.length;
+            break;
+          case 2:
+            // getExpiringCertificates 7d
+            stats.expiring['lt7d'] += auth.length;
+            break;
+          case 3:
+            // getExpiredCertificates 7d
+            stats.expired['lt7d'] += auth.length;
+            break;
+          case 4:
+            // getRevokedCertificates 7d
+            stats.revoked['lt7d'] += auth.length;
+            break;
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log('stats', stats);
+
+    return stats;
   }
 
   private filterCommonDevices(
