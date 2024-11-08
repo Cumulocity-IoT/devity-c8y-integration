@@ -152,6 +152,16 @@ export class DevityProxyService {
     return this.proxy<DevityCertificateData[]>(request);
   }
 
+  getIssuingCA(caCertificateId: number) {
+    const request: ProxyRequest = {
+        url: `/certificateAuthorities/${caCertificateId}/issuingCa`,
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        body: null,
+      };
+      return this.proxy<CaCertificateDto>(request);
+  }
+
   getCertificateAuthority(caId: CumulocityConfiguration['caId']) {
     const request: ProxyRequest = {
       url: `/certificateAuthorities/trustanchors/id/${caId}`,
@@ -162,14 +172,24 @@ export class DevityProxyService {
     return this.proxy<CaCertificateDto>(request);
   }
 
-  postCertificateAuthority(caName: string, authoritiy: CertificateAuthorityConfig) {
+  createCertificateAuthority(caName: string, authoritiy: CertificateAuthorityConfig) {
     const request: ProxyRequest = {
         url: `/certificateAuthorities/${caName}`,
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: authoritiy,
       };
-      return this.proxy<[]>(request);
+      return this.proxy<CumulocityConfiguration>(request);
+  }
+
+  deleteCertificateAuthority(caCertificateId: number) {
+    const request: ProxyRequest = {
+        url: `/certificateAuthorities/${caCertificateId}`,
+        method: 'DELETE',
+        headers: { Accept: 'application/json' },
+        body: null,
+      };
+      return this.proxy(request);
   }
 
   getAppInstances(guid: DevityDevice['guid']) {

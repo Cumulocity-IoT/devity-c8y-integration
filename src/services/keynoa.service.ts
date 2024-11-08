@@ -10,6 +10,7 @@ import { PKIProvider, PKI_PROVIDER_TYPE } from '../models/pki-provider.model';
 
 @Injectable({ providedIn: 'root' })
 export class KeynoaService {
+  
   constructor(
     private fetchClient: FetchClient,
     private inventoryService: InventoryService
@@ -72,4 +73,8 @@ export class KeynoaService {
 
     return url;
   }
+
+  getCAId(): number {
+    throw new Error("Method not implemented.");
+}
 }
