@@ -81,24 +81,23 @@ export interface TrustAnchorCertificate {
 }
 
 export interface DevityCertificateData {
-  csr: string | null;
-  certificate: string;
-  fingerprint: string;
-  issuerCaFingerprint: string;
-  caId: number;
-  caName: string;
-  pkiPath: string;
-  algorithm: string;
-  issuerCn: string;
-  subjectCn: string;
-  subOrganization: string;
-  /** ISO 8601 format timestamp */
-  expirationTime: string;
-  defaultCertificateTemplateId: number;
-  protected: boolean;
-  isEnterprise: boolean;
-  acmeDirectory: string;
-}
+    acmeDirectory: string;
+    algorithm: string;
+    caId: number;
+    caName: string;
+    certificate: string;
+    csr: string | null;
+    defaultCertificateTemplateId: number;
+    expirationTime: string; // ISO 8601 format timestamp
+    fingerprint: string;
+    isEnterprise: boolean;
+    issuerCaFingerprint: string;
+    issuerCn: string;
+    pkiPath: string;
+    protected: boolean;
+    subjectCn: string;
+    subOrganization: string;
+  }
 
 export const DevityCertificateStatus = {
   VALID: 'valid',
@@ -108,3 +107,40 @@ export const DevityCertificateStatus = {
 };
 export type DevityCertificateStatus =
   (typeof DevityCertificateStatus)[keyof typeof DevityCertificateStatus];
+
+  export interface CertificateAuthorityConfig {
+    caType: string; // e.g., "INTERNAL"
+    rootTTL: string; // e.g., "87600h"
+    intermediateTTL: string; // e.g., "43800h"
+    keyType: string; // e.g., "RSA"
+    keyBits: number; // e.g., 4096
+    csrFields: CSRFields;
+    defaultCertificateTemplate: CertificateTemplate;
+  }
+  
+  export interface CSRFields {
+    alt_names: string; // e.g., "example.com"
+    ip_sans: string; // e.g., "192.168.0.1"
+    uri_sans: string; // e.g., "string"
+    other_sans: string; // e.g., "<oid>;<type>:<value>"
+    ou: string; // e.g., "Research & Development"
+    organization: string; // e.g., "DEVITY"
+    country: string; // e.g., "DE"
+    locality: string; // e.g., "Paderborn"
+    province: string; // e.g., "NRW"
+    street_address: string; // e.g., "31 Samplestraße"
+    postal_code: string; // e.g., "34000"
+  }
+  
+  export interface CertificateTemplate {
+    id: number; // e.g., 0
+    distinguishedName: string; // e.g., "DistinguishedName(...)"
+    subjectAltName: string; // e.g., "SubjectAltName(...)"
+    keyUsage: string; // e.g., "[digitalSignature=true, ...]"
+    extendedKeyUsage: string; // e.g., "[serverAuth=true, ...]"
+    validityPeriod: string; // e.g., "720h"
+    renewBefore: number; // e.g., 20
+    keyAlgorithm: string; // e.g., "RSA3072"
+    signAlgorithm: string; // e.g., "SHA256"
+  }
+  

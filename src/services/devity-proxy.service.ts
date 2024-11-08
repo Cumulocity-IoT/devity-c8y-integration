@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   CaCertificateDto,
+  CertificateAuthorityConfig,
   CumulocityConfiguration,
   DevityCertificateData,
   DevityDevice,
@@ -151,6 +152,26 @@ export class DevityProxyService {
     return this.proxy<DevityCertificateData[]>(request);
   }
 
+  getCertificateAuthority(caId: CumulocityConfiguration['caId']) {
+    const request: ProxyRequest = {
+      url: `/certificateAuthorities/trustanchors/id/${caId}`,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<CaCertificateDto>(request);
+  }
+
+  postCertificateAuthority(caName: string, authoritiy: CertificateAuthorityConfig) {
+    const request: ProxyRequest = {
+        url: `/certificateAuthorities/${caName}`,
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: authoritiy,
+      };
+      return this.proxy<[]>(request);
+  }
+
   getAppInstances(guid: DevityDevice['guid']) {
     const request: ProxyRequest = {
       url: `/devices/${guid}/appInstances`,
@@ -191,16 +212,6 @@ export class DevityProxyService {
       body: null,
     };
     return this.proxy<CumulocityConfiguration>(request);
-  }
-
-  getCertificateAuthority(caId: CumulocityConfiguration['caId']) {
-    const request: ProxyRequest = {
-      url: `/certificateAuthorities/trustanchors/id/${caId}`,
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-      body: null,
-    };
-    return this.proxy<CaCertificateDto>(request);
   }
 
   getTrustAnchor(
