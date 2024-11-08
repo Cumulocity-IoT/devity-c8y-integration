@@ -16,5 +16,25 @@
     [showSearch]="false"
     [actionControls]="actions"
     [displayOptions]="{ bordered: true, gridHeader: false, filter: false, striped: true, hover: true }">
+    <c8y-ui-empty-state
+        [icon]="'search'"
+        [title]="'No results to display.' | translate"
+        [subtitle]="'This PKI Provider has no Certificate Authorities yet.' | translate"
+        [horizontal]="true"
+      ></c8y-ui-empty-state>
+
+      <c8y-column name="status">
+        <ng-container *c8yCellRendererDef="let context">
+          <span class="j-c-center">
+            <i 
+              c8yIcon="{{ (context.item.expirationTime | isFutureDate) ? 'check-circle' : 'exclamation-circle'}}" 
+              class="c8y-icon icon-24" 
+              ngClass="{{ (context.item.expirationTime | isFutureDate) ? 'text-success' : 'text-danger'}}"
+              title="{{ ((context.item.expirationTime | isFutureDate) ? 'Active' : 'Expired') | translate }}">
+            </i>
+          <p>{{ ((context.item.expirationTime | isFutureDate) ? 'Active' : 'Expired') | translate }}</p>
+        </span>
+        </ng-container>
+      </c8y-column>
   </c8y-data-grid>
 </div>

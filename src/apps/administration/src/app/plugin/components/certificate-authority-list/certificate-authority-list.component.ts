@@ -52,6 +52,10 @@ export class DevityCertificateAuthorityListComponent {
           name: 'publickeyalg',
           header: gettext('Public Key Alg'),
           path: 'algorithm',
+      },
+      {
+        name: 'status',
+        header: gettext('Status'),
       }
   ];
   pagination: Pagination = {

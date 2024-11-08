@@ -12,7 +12,6 @@ import { CertificateActionService } from "~services/certificate-action.service";
     styleUrl: './certificate-widget.component.less'
 })
 export class CertificateWidgetComponent {
-  // TODO: add polling as needed for revoke
     device: IManagedObject;
     cert?: { 
       application: string,

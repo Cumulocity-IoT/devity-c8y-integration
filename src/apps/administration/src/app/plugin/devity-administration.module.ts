@@ -11,6 +11,7 @@ import { DevityCertificateAuthorityListComponent } from './components/certificat
 import { DevityCertificateAuthorityModalComponent } from './components/certificate-authority-modal/certificate-authority-modal.component';
 import { PKIProviderTabFactory } from './components/pki-provider/pki-provider-tab.factory';
 import { DevityPKIProviderComponent } from './components/pki-provider/pki-provider.component';
+import { IsFutureDatePipe } from './components/certificate-authority-list/is-expired.pipe';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { DevityPKIProviderComponent } from './components/pki-provider/pki-provid
     DevityAdminPKIProviderModalComponent,
     DevityCertificateAuthorityModalComponent,
     DevityCertificateAuthorityListComponent,
+    IsFutureDatePipe,
   ],
   providers: [
     hookRoute({
