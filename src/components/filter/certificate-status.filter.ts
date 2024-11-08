@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { FilteringFormRendererContext } from '@c8y/ngx-components';
-import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
   standalone: true,
@@ -57,76 +55,25 @@ export class CertificateStatusFilterRendererComponent implements OnInit {
   //   }
   // ];
 
-  form = new FormGroup({});
-
-  model: {
-    deviceStatus?: {
-      inOperation: boolean;
-      maintenance: boolean;
-      warning: boolean;
-      failure: boolean;
-      stopped: boolean;
-      offline: boolean;
-    };
-  } = {};
-
-  fields: FormlyFieldConfig[] = [
-    {
-      type: 'object',
-      key: 'deviceStatus',
-      templateOptions: {
-        label: 'grid.filter-label--default',
-      },
-      fieldGroup: [
-        {
-          key: 'inOperation',
-          type: 'boolean',
-          defaultValue: false,
-          templateOptions: {
-            label: 'device-status.status--in-operation',
-            attributes: {
-              class: 'filter-icon device-status--in-operation',
-            },
-          },
-        },
-      ],
-    },
-  ];
-
   constructor(public context: FilteringFormRendererContext) {
-    const externalFilterQuery = context.property.externalFilterQuery as {
-      model?: {
-        deviceStatus: {
-          inOperation: boolean;
-          maintenance: boolean;
-          warning: boolean;
-          failure: boolean;
-          stopped: boolean;
-          offline: boolean;
-        };
-      };
-    };
-
-    this.model =
-      externalFilterQuery && externalFilterQuery.model
-        ? externalFilterQuery.model
-        : {};
+    console.log('constructor', context);
   }
 
   ngOnInit() {
-    const column = this.context.property;
+    const activeFilters = this.context.property.externalFilterQuery as object[];
 
-    this.form = column.filteringConfig.formGroup || new FormGroup({});
-    this.model =
-      column.externalFilterQuery || column.filteringConfig.model || {};
+    console.log('init', activeFilters);
+
+    if (!activeFilters?.length) return;
+
+    // TODO filter
   }
 
   applyFilter() {
-    console.log(this.fields);
-    // this.context.resetFilter();
+    const activeFilters: object[] = [];
 
     this.context.applyFilter({
-      externalFilterQuery: this.form.value as string | object,
+      externalFilterQuery: activeFilters,
     });
   }
 

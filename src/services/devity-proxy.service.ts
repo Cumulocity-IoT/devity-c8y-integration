@@ -49,8 +49,8 @@ export class DevityProxyService {
   }
 
   moveDevice(
-    appInstanceId: DevityDeviceApp['appInstanceId'], 
-    deviceGuid: DevityDevice['guid'], 
+    appInstanceId: DevityDeviceApp['appInstanceId'],
+    deviceGuid: DevityDevice['guid'],
     localConfigId: number) {
     const url = `/devices/switchConfig`;
     const request: ProxyRequest = {
@@ -109,6 +109,31 @@ export class DevityProxyService {
   ) {
     const request: ProxyRequest = {
       url: `/appCertificates/expired?caFingerprint=${caFingerprint}&daysAmount=${days}`,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<DevityDeviceCertificate[]>(request);
+  }
+
+  getRevokedCertificates(
+    caFingerprint: DevityCertificateData['fingerprint'],
+    days: number
+  ) {
+    const request: ProxyRequest = {
+      url: `/appCertificates/revoked?caFingerprint=${caFingerprint}&daysAmount=${days}`,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<DevityDeviceCertificate[]>(request);
+  }
+
+  getValidCertificates(
+    caFingerprint: DevityCertificateData['fingerprint']
+  ) {
+    const request: ProxyRequest = {
+      url: `/appCertificates/valid?caFingerprint=${caFingerprint}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
