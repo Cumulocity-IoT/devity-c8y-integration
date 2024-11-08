@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { PKIProvider } from '~models/pki-provider.model';
 import { KeynoaService } from '~services/keynoa.service';
@@ -12,11 +13,22 @@ import { DevityCertificateAuthorityModalComponent } from '../certificate-authori
 export class DevityPKIProviderComponent implements OnInit {
   providers?: PKIProvider[];
   isLoading = true;
+  id: string | number;
 
   constructor(
     private bdModalService: BsModalService,
-    private keynoaService: KeynoaService
-  ) {}
+    private keynoaService: KeynoaService,
+    router: Router
+  ) {
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const regex = /^\/auth-configuration\/pki-provider\/([0-9]*)/;
+        const match = event.url.match(regex);
+
+        this.id = (match && match[1]) ? match[1] : null;
+      }
+    });
+  }
 
   ngOnInit(): void {
     void this.reload();
@@ -29,17 +41,11 @@ export class DevityPKIProviderComponent implements OnInit {
         initialState: {
           pkiProvider: provider,
         },
-        class: 'modal-xs'
+        class: 'modal-xs',
       }
     );
 
     modalRef.onHide.subscribe(() => this.reload());
-  }
-
-  async connect(provider: PKIProvider): Promise<void> {
-    const auth = await this.keynoaService.connect(provider);
-
-    console.log('auth', auth);
   }
 
   async delete(provider: PKIProvider): Promise<void> {

@@ -17,36 +17,35 @@
 </c8y-action-bar-item>
 
 <!-- listing -->
-@if (isLoading) {
-  <c8y-loading></c8y-loading>
-} @else {
-  <c8y-list-group>
-    @for (provider of providers; track provider.id) {
-      <c8y-li>
-        @if (provider.caType) {
-          <span>{{ provider.caName }}</span>
-          <span class="text-muted m-l-16">{{ provider.url }}</span>
-        } @else {
-          <span>{{ provider.url }}</span>
-        }
+<div class="row">
+  @if (isLoading) {
+    <c8y-loading></c8y-loading>
+  } @else {
+    <div class="col-md-4">
+      <div class="card">
+        <c8y-list-group>
+          @for (provider of providers; track provider.id) {
+            <c8y-li>
+              <a [routerLink]="[provider.id]">{{ provider.url }}</a>
 
-        <!-- actions -->
-        <c8y-li-action icon="disconnected" [disabled]="!provider.caType" (click)="connect(provider)">
-          Connect
-        </c8y-li-action>
-        <c8y-li-action icon="key" (click)="certificateAuthorityModal(provider)">
-          Cert. Authority
-        </c8y-li-action>
-        <c8y-li-action icon="pencil" (click)="openModal(provider)">
-          Edit
-        </c8y-li-action>
-        <c8y-li-action icon="trash" (click)="delete(provider)">
-          Delete
-        </c8y-li-action>
-      </c8y-li>
-    }
-    @empty {
-      <li translate>No PKI Providers configured.</li>
-    }
-  </c8y-list-group>
-}
+              <c8y-li-action icon="pencil" (click)="openModal(provider)" translate>Edit</c8y-li-action>
+              <c8y-li-action icon="trash" (click)="delete(provider)" translate>Delete</c8y-li-action>
+            </c8y-li>
+          }
+          @empty {
+            <c8y-li translate>No PKI Providers configured.</c8y-li>
+          }
+        </c8y-list-group>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="p-16" [class.card]="id">
+        @if (id) {
+          <devity-certificate-authority-list [id]="id"></devity-certificate-authority-list>
+        } @else {
+          <span class="text-muted">Please Select a PKI Provide on the left</span>
+        }
+      </div>
+    </div>
+  }
+</div>
