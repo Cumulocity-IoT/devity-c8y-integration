@@ -30,7 +30,7 @@ export type ProxyResponse<T> = {
   providedIn: 'root',
 })
 export class DevityProxyService {
-  
+
   constructor(private ms: MicroserviceService) {}
 
   revokeCertificate(

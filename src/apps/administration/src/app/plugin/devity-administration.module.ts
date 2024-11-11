@@ -23,9 +23,7 @@ import { FormlyFieldMultiSelect } from '~components/formly/multi-select.type.com
     FormsModule,
     NgSelectModule,
     FormlyModule.forRoot({
-      types: [
-        { name: 'multi-select', component: FormlyFieldMultiSelect }
-      ]
+      types: [{ name: 'multi-select', component: FormlyFieldMultiSelect }],
     }),
     CollapseModule,
   ],
@@ -35,7 +33,7 @@ import { FormlyFieldMultiSelect } from '~components/formly/multi-select.type.com
     DevityCertificateAuthorityModalComponent,
     DevityCertificateAuthorityListComponent,
     IsFutureDatePipe,
-    FormlyFieldMultiSelect
+    FormlyFieldMultiSelect,
   ],
   providers: [
     hookRoute({

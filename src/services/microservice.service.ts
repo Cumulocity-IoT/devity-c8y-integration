@@ -54,7 +54,8 @@ export class MicroserviceService {
 
   async get(
     url: string,
-    responseHandler: (response: IFetchResponse) => Promise<any> = this.defaultResponseHandler
+    responseHandler: (response: IFetchResponse) => Promise<any> = this
+      .defaultResponseHandler
   ) {
     const response = await this.fetch.fetch(url, this.GET_OPTIONS);
     return responseHandler(response);
@@ -63,7 +64,8 @@ export class MicroserviceService {
   async post(
     url: string,
     data: any,
-    responseHandler: (response: IFetchResponse) => Promise<any> = this.defaultResponseHandler
+    responseHandler: (response: IFetchResponse) => Promise<any> = this
+      .defaultResponseHandler
   ) {
     const options = cloneDeep(this.POST_OPTIONS);
     options.body = JSON.stringify(data);
@@ -75,7 +77,8 @@ export class MicroserviceService {
   async put(
     url: string,
     data: any,
-    responseHandler: (response: IFetchResponse) => Promise<any> = this.defaultResponseHandler
+    responseHandler: (response: IFetchResponse) => Promise<any> = this
+      .defaultResponseHandler
   ) {
     const options = cloneDeep(this.PUT_OPTIONS);
     options.body = JSON.stringify(data);
