@@ -14,12 +14,12 @@
             <div class="d-flex a-i-center m-16 p-b-0 p-t-16 j-c-center animated fadeIn" *ngIf="didFinishLoading">
                 <span>
                     <i 
-                        c8yIcon="{{ !cert ? 'unverified-account' : cert?.isActive ? 'approval' : 'exclamation-circle'}}" 
+                        c8yIcon="{{ cert | certIcon }}" 
                         class="c8y-icon icon-32" 
                         ngClass="{{ !cert ? 'text-info' : cert?.isActive ? 'text-success' : 'text-danger'}}">
                     </i>
                 </span>
-                <p class="text-bold">{{ !cert ? 'No certificate found.' : (cert?.isActive ? 'Active' : 'Expired') | translate}}</p>
+                <p class="text-bold">{{ cert | certStatus | translate}}</p>
             </div>
         </div>
 

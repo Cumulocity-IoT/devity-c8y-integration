@@ -6,7 +6,7 @@
  *
  * If you need more types supported, add them to the d.ts file and add a webpack rule.
  */
-import previewImage from './file-table.png';
+import previewImage from './certificate-widget.png';
 
 // paths can be shared via this module if needed
 export const assetPaths = { previewImage };

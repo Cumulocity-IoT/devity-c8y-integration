@@ -19,6 +19,7 @@ import { CertificateWidgetComponent } from './components/certificate-widget/cert
 import { DevityDeviceDetails } from './components/device-details/device-details.component';
 import { IntervalRefreshComponent } from "~components/interval/interval-refresh.component";
 import { SPSLoadingComponent } from '~components/loading/loading.component';
+import { CertificateIconPipe, CertificateStatusPipe } from './components/certificate-widget/cert-status.pipe';
 
 @NgModule({
   imports: [
@@ -36,6 +37,8 @@ import { SPSLoadingComponent } from '~components/loading/loading.component';
     CertificateWidgetComponent,
     CertificateConfigWidgetComponent,
     CertificateListComponent,
+    CertificateStatusPipe,
+    CertificateIconPipe,
   ],
   providers: [
     hookComponent({

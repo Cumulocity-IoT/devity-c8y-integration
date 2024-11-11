@@ -4,7 +4,7 @@ import { IManagedObject } from "@c8y/client";
 import { BehaviorSubject } from "rxjs";
 import { DevityProxyService } from "~services/devity-proxy.service";
 import { isNil, maxBy } from "lodash";
-import { CumulocityConfiguration, DevityDevice, DevityDeviceApp, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
+import { CumulocityConfiguration, DevityCertificateStatus, DevityDevice, DevityDeviceApp, DevityDeviceCertificate, ThinEdgeConfiguration } from "~models/rest-reponse.model";
 import { CertificateActionService } from "~services/certificate-action.service";
 
 @Component({
@@ -19,7 +19,8 @@ export class CertificateWidgetComponent {
       authority: string,
       issueDate: string,
       expirationDate: string,
-      isActive: boolean 
+      isActive: boolean,
+      isRevoked: boolean, 
     };
 
     issuingCA?: {
@@ -74,6 +75,11 @@ export class CertificateWidgetComponent {
         return isActive;
     }
 
+    private isRevoked(cert: DevityDeviceCertificate) {
+      const now = new Date();
+      return cert.status === DevityCertificateStatus.REVOKED || (!isNil(cert.revokedAt) && now >= new Date(cert.revokedAt));
+    }
+
     private async loadKeynoaData() {
       const devices = await this.devityProxy.getDevices();
       const keynoaDevice = devices.find(d => d.serialNumber === this.device.name);
@@ -111,7 +117,8 @@ export class CertificateWidgetComponent {
           authority: certToShow.caFingerprint,
           issueDate: new Date(certToShow.issuedAt).toISOString(),
           expirationDate: expirationDate.toISOString(),
-          isActive: this.isActive(certToShow)
+          isActive: this.isActive(certToShow),
+          isRevoked: this.isRevoked(certToShow),
         };
         this.keynoaRawData.certificate = certToShow;
       } else {
