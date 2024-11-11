@@ -9,7 +9,6 @@ import {
   hookNavigator,
   hookRoute,
 } from '@c8y/ngx-components';
-import { FormlyModule } from '@ngx-formly/core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CERTIFICATES_LIST_PATH } from '~models/app-dm.model';
@@ -27,7 +26,6 @@ import { SPSLoadingComponent } from '~components/loading/loading.component';
     CoreModule,
     RouterModule,
     FormsModule,
-    FormlyModule.forChild(),
     TooltipModule,
     CollapseModule,
     IntervalRefreshComponent,

@@ -42,7 +42,8 @@ export class DevityPKIProviderComponent implements OnInit {
     await this.reload;
   }
 
-  openCAModal(provider: PKIProvider): void {
+  openCAModal(): void {
+    let provider: PKIProvider;
     if (this.id) {
       provider = this.providers.find((pki) => pki.id === this.id);
     }

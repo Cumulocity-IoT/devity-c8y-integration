@@ -81,11 +81,11 @@ export class DevityCertificateAuthorityListComponent {
 
   async reload() {
     try {
-      const caIDs = (await this.keynoaService.getProvider(this._providerId)).caIds;
+      const caID = (await this.keynoaService.getProvider(this._providerId)).caId;
       const cas = await this.proxyService.getCertificateAuthorities();
-      const casCreatedByC8y = cas.filter(ca => caIDs?.includes(ca.caId));
-      if (casCreatedByC8y.length) {
-        this.rows = casCreatedByC8y.map(cert => ({ ...cert, id: cert.caId.toString()}));
+      const cert = cas.find(ca => ca.caId === caID);
+      if (cert) {
+        this.rows = [{ ...cert, id: cert.caId.toString() }];
       } else {
         // TODO: remove this fallback before fair!!
         this.rows = cas.map(cert => ({ ...cert, id: cert.caId.toString()}));

@@ -110,7 +110,7 @@ export type DevityCertificateStatus =
 
   export interface CertificateAuthorityConfig {
     caType: string; // e.g., "INTERNAL"
-    rootTTL: string; // e.g., "87600h"
+    rootTTl: string; // e.g., "87600h"
     intermediateTTL: string; // e.g., "43800h"
     keyType: string; // e.g., "RSA"
     keyBits: number; // e.g., 4096
@@ -119,28 +119,56 @@ export type DevityCertificateStatus =
   }
   
   export interface CSRFields {
-    alt_names: string; // e.g., "example.com"
-    ip_sans: string; // e.g., "192.168.0.1"
-    uri_sans: string; // e.g., "string"
-    other_sans: string; // e.g., "<oid>;<type>:<value>"
+    altNames: string; // e.g., "example.com"
+    ipSans: string; // e.g., "192.168.0.1"
+    uriSans: string; // e.g., "string"
+    otherSans: string; // e.g., "<oid>;<type>:<value>"
     ou: string; // e.g., "Research & Development"
     organization: string; // e.g., "DEVITY"
     country: string; // e.g., "DE"
     locality: string; // e.g., "Paderborn"
     province: string; // e.g., "NRW"
-    street_address: string; // e.g., "31 Samplestraße"
-    postal_code: string; // e.g., "34000"
+    streetAddress: string; // e.g., "31 Samplestraße"
+    postalCode: string; // e.g., "34000"
   }
   
   export interface CertificateTemplate {
     id: number; // e.g., 0
-    distinguishedName: string; // e.g., "DistinguishedName(...)"
-    subjectAltName: string; // e.g., "SubjectAltName(...)"
-    keyUsage: string; // e.g., "[digitalSignature=true, ...]"
-    extendedKeyUsage: string; // e.g., "[serverAuth=true, ...]"
+    distinguishedName: {
+        commonName: string | null,
+        country: string | null,
+        organization: string | null,
+        organizationUnit: string | null,
+        stateOrProvince: string | null,
+        serialNumber: string | null,
+        locality: string | null
+    } | null,
+    subjectAltName: {
+        dnsName: string | null,
+        uri: string | null,
+        includeDeviceIp: boolean | null,
+    } | null,
+    keyUsage: {
+        digitalSignature: boolean, 
+        keyEncipherment: boolean, 
+        dataEncipherment: boolean,
+        keyAgreement: boolean,
+        keyCertSign: boolean, 
+        crlSign: boolean
+    },
+    extendedKeyUsage: {
+        clientAuth: boolean, codeSigning: boolean, serverAuth: boolean, emailProtection: boolean, timeStamping: boolean , ocspSigning: boolean
+    },
     validityPeriod: string; // e.g., "720h"
     renewBefore: number; // e.g., 20
     keyAlgorithm: string; // e.g., "RSA3072"
     signAlgorithm: string; // e.g., "SHA256"
+  }
+
+  export interface CertificateAuthorityCreate {
+    caName: string;
+    certificate: string;
+    csr: string | null;
+    pkiPath: string;
   }
   

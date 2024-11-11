@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   CaCertificateDto,
   CertificateAuthorityConfig,
+  CertificateAuthorityCreate,
+  CertificateTemplate,
   CumulocityConfiguration,
   DevityCertificateData,
   DevityDevice,
@@ -28,6 +30,7 @@ export type ProxyResponse<T> = {
   providedIn: 'root',
 })
 export class DevityProxyService {
+  
   constructor(private ms: MicroserviceService) {}
 
   revokeCertificate(
@@ -189,7 +192,7 @@ export class DevityProxyService {
         headers: { Accept: 'application/json' },
         body: authoritiy,
       };
-      return this.proxy<CumulocityConfiguration>(request);
+      return this.proxy<CertificateAuthorityCreate>(request);
   }
 
   deleteCertificateAuthority(caCertificateId: number) {
@@ -212,6 +215,26 @@ export class DevityProxyService {
     return this.proxy<DevityDeviceApp[]>(request);
   }
 
+  createThinEdgeConfig(config: Omit<ThinEdgeConfiguration, 'id'>) {
+    const request: ProxyRequest = {
+        url: `/thinEdgeConfigurations`,
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: config,
+      };
+      return this.proxy<ThinEdgeConfiguration>(request);
+  }
+
+  createDeviceSelector(deviceSelector: { configId: ThinEdgeConfiguration['id']; configType: string; weight: number; patterns: { MODEL: string; }; }) {
+    const request: ProxyRequest = {
+        url: `/deviceSelectors`,
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: deviceSelector,
+      };
+      return this.proxy<ThinEdgeConfiguration>(request);
+  }
+
   getThinEdgeConfig(localConfigId: DevityDeviceApp['localConfigId']) {
     const request: ProxyRequest = {
       url: `/thinEdgeConfigurations/${localConfigId}`,
@@ -232,6 +255,16 @@ export class DevityProxyService {
       return this.proxy<ThinEdgeConfiguration[]>(request);
   }
 
+  createCumulocityConfig(config: Omit<CumulocityConfiguration, 'id'>) {
+    const request: ProxyRequest = {
+        url: `/cumulocityConfigurations`,
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: config,
+      };
+      return this.proxy<CumulocityConfiguration>(request);
+  }
+
   getCumulocityConfig(
     cumulocityConfigurationId: ThinEdgeConfiguration['cumulocityConfigurationId']
   ) {
@@ -242,6 +275,16 @@ export class DevityProxyService {
       body: null,
     };
     return this.proxy<CumulocityConfiguration>(request);
+  }
+
+  createCertificateTemplate(template: CertificateTemplate) {
+    const request: ProxyRequest = {
+        url: `/certificateTemplates`,
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: template,
+      };
+      return this.proxy<CertificateTemplate>(request);
   }
 
   getTrustAnchor(

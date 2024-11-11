@@ -34,13 +34,22 @@
           </div>
         }
         @case (1) {
-          <!-- TODO insert form fields -->
           <formly-form [form]="formlyStep2" [fields]="step2Fields" [model]="step2Model"></formly-form>
-          
+          <!-- <pre>
+            {{ step2Model | json }}
+          </pre> -->
         }
         @case (2) {
-          <!-- TODO insert form fields -->
           <formly-form [form]="formlyStep3" [fields]="step3Fields" [model]="step3Model"></formly-form>
+          <!-- <pre>
+            {{ step3Model | json }}
+          </pre> -->
+        }
+        @case (3) {
+          <div class="form-group flex-grow">
+            <label for="patterns" translate>Device Selector Patterns</label>
+            <input type="text" id="patterns" class="form-control" formControlName="patterns">
+          </div>
         }
       }
     </div>
