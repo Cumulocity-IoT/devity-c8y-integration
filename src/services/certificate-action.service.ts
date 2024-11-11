@@ -48,16 +48,21 @@ export class CertificateActionService {
           }
     }
 
-    async renew(): Promise<ActionResult> {
+    async renew(guid: DevityDevice['guid']): Promise<ActionResult> {
         try {
             await this.modal.confirm(
               "Renew certificate",
               "You are about to renew the certificate. Are you sure you want to continue?",
-              Status.WARNING,
+              Status.INFO,
               {
                 ok: gettext("Renew"),
               },
             );
+            try {
+                await this.devityProxyService.renewDevice(guid);
+            } catch(e) {
+                return { status: 'error', error: e };
+            }
             return { status: 'success' };
           } catch (e) {
             return { status: 'canceled' };
@@ -75,7 +80,6 @@ export class CertificateActionService {
         const config = await firstValueFrom(ref.content.closeSubject);
         if (config) {
             try {
-                debugger;
                 await this.devityProxyService.moveDevice(app.appInstanceId, device.guid, config.id)
                 return { status: 'success' };
             } catch(e) {

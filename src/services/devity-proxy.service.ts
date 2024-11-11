@@ -49,6 +49,16 @@ export class DevityProxyService {
     return this.proxy(request);
   }
 
+    renewDevice(guid: DevityDevice['guid']) {
+        const request: ProxyRequest = {
+            url: `/device/${guid}/renew`,
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: null,
+          };
+          return this.proxy(request);
+    }
+
   moveDevice(
     appInstanceId: DevityDeviceApp['appInstanceId'],
     deviceGuid: DevityDevice['guid'],
