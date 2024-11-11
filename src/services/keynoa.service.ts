@@ -10,7 +10,6 @@ import { PKIProvider, PKI_PROVIDER_TYPE } from '../models/pki-provider.model';
 
 @Injectable({ providedIn: 'root' })
 export class KeynoaService {
-  
   constructor(
     private fetchClient: FetchClient,
     private inventoryService: InventoryService
@@ -38,8 +37,10 @@ export class KeynoaService {
     )?.data as PKIProvider[];
   }
 
-   getProvider(id: string | number): Promise<PKIProvider> {
-    return this.inventoryService.detail(id).then(res => res.data as PKIProvider);
+  getProvider(id: string | number): Promise<PKIProvider> {
+    return this.inventoryService
+      .detail(id)
+      .then((res) => res.data as PKIProvider);
   }
 
   async set(provider: Partial<PKIProvider>): Promise<PKIProvider> {

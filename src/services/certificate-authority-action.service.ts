@@ -10,7 +10,7 @@ export type ActionResult = { status: 'success' | 'canceled' } | { status: 'error
     providedIn: 'root'
 })
 export class CertificateAuhtorityActionService {
-    
+
     constructor(
         private modal: ModalService,
         private alertService: AlertService,
