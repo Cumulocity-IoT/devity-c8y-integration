@@ -10,7 +10,7 @@
 
 <!-- add CA -->
 <c8y-action-bar-item [placement]="'right'" [priority]="100">
-  <button type="button" class="btn btn-link" [disabled]="!id" (click)="openCAModal()">
+  <button type="button" class="btn btn-link" [disabled]="!id || providerHasCA" (click)="openCAModal()">
     <i [c8yIcon]="'add'"></i>
     {{ 'Add Certificate Authority' | translate }}
   </button>
