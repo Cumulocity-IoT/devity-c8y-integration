@@ -1,36 +1,70 @@
-<div class="modal-header">
+<div class="modal-header separator-bottom">
   <h3 translate>Create Certificate Authority</h3>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div class="modal-body">
-    <div class="form-group flex-grow">
-      <label for="ca_type" translate>Type</label>
+@for (step of form; track step; let index = $index) {
+  <form [formGroup]="form[index]" [hidden]="index !== currentStep" (ngSubmit)="submit()">
+    <div class="modal-body">
+      <ul class="stepper">
+        @for (s of form; track s; let i = $index) {
+          <li [class.active]="currentStep === i">{{ stepTitles[i] }}</li>
+        }
+      </ul>
 
-      <div class="c8y-select-wrapper">
-        <select id="ca_type" name="type" formControlName="caType">
-          @for (ca of authorityTypes; track ca.value) {
-            <option class="form-control" [ngValue]="ca.value">
-              {{ ca.label }}
-            </option>
-          }
-        </select>
-      </div>
+      <h4 class="m-b-16">{{ stepTitles[index] }}</h4>
+      @switch(index) {
+        @case (0) {
+          <div class="form-group flex-grow">
+            <label for="ca_type" translate>Type</label>
+
+            <div class="c8y-select-wrapper">
+              <select id="ca_type" name="type" formControlName="caType">
+                @for (ca of authorityTypes; track ca.value) {
+                <option class="form-control" [ngValue]="ca.value">
+                  {{ ca.label }}
+                </option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ca_name" translate>Name</label>
+            <input id="ca_name" class="form-control" name="name" formControlName="caName" />
+          </div>
+        }
+        @case (1) {
+          <!-- insert form fields -->
+           Step 2 form fields
+        }
+        @case (2) {
+          <!-- insert form fields -->
+           Step 3 form fields
+        }
+      }
     </div>
 
-    <div class="form-group">
-      <label for="ca_name" translate>Name</label>
-      <input id="ca_name" class="form-control" name="name" formControlName="caName" />
+    <div class="modal-footer">
+      @if (index === 0) {
+        <button translate type="button" class="btn btn-default" (click)="close()">
+          Cancel
+        </button>
+      } @else if(index > 0) {
+        <button translate type="button" class="btn btn-default" (click)="back()">
+          Back
+        </button>
+      }
+      @if (index < totalSteps - 1) {
+        <!-- TODO disabled if not valid -->
+        <button translate type="button" class="btn btn-primary" (click)="next()">
+          Next
+        </button>
+      } @else {
+        <button type="submit" class="btn btn-primary" [disabled]="isProcessing" [class.btn-pending]="isProcessing" translate>
+          Create
+        </button>
+      }
     </div>
-  </div>
-
-  <div class="modal-footer">
-    <button translate type="button" class="btn btn-default" (click)="close()">
-      Cancel
-    </button>
-    <button type="submit" class="btn btn-primary" [disabled]="isProcessing" [class.btn-pending]="isProcessing" translate>
-      Create
-    </button>
-  </div>
-</form>
+  </form>
+}
 

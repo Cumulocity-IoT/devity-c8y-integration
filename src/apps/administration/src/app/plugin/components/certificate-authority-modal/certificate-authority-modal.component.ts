@@ -7,6 +7,7 @@ import { KeynoaService } from '~services/keynoa.service';
 @Component({
   selector: 'devity-certificate-authority-modal',
   templateUrl: './certificate-authority-modal.component.html',
+  styleUrl: './certificate-authority-modal.component.scss',
 })
 export class DevityCertificateAuthorityModalComponent {
   @Input()
@@ -15,16 +16,34 @@ export class DevityCertificateAuthorityModalComponent {
   }
   set pkiProvider(pkiProvider: PKIProvider) {
     this._pkiProvider = pkiProvider;
-    this.form.setValue({
+
+    // step 1
+    this.form[0].setValue({
       caType: pkiProvider.caType || this.authorityTypes[0].value,
       caName: pkiProvider.caName || '',
     });
   }
 
-  form = new FormGroup({
-    caType: new FormControl('keynoa', [Validators.required]),
-    caName: new FormControl('', [Validators.required]),
-  });
+  form: FormGroup[] = [
+    // step 1
+    new FormGroup({
+      caType: new FormControl('keynoa', [Validators.required]),
+      caName: new FormControl('', [Validators.required]),
+    }),
+    // step 2
+    new FormGroup({
+      firstname: new FormControl('', [Validators.required]),
+      lastname: new FormControl('', [Validators.required]),
+    }),
+    // step 3
+    new FormGroup({
+      street: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+    }),
+  ];
+  stepTitles = ['First Step', 'Le Step 2', 'Step 3'];
+  currentStep = 0;
+  totalSteps = this.form.length;
 
   authorityTypes = [
     { label: 'Keynoa CA', value: 'keynoa' },
@@ -40,15 +59,29 @@ export class DevityCertificateAuthorityModalComponent {
     private keynoaSerice: KeynoaService
   ) {}
 
-  close() {
+  close(): void {
     this.bsModalRef.hide();
+  }
+
+  back(): void {
+    if (this.currentStep > 0) this.currentStep--;
+  }
+
+  next(): void {
+    if (this.currentStep < this.totalSteps - 1) this.currentStep++;
   }
 
   async submit(): Promise<void> {
     this.isProcessing = true;
 
     try {
-      await this.keynoaSerice.set({ ...this.pkiProvider, ...this.form.value });
+      // join form values
+      const formValues = {
+        ...this.form[0].value,
+        ...this.form[1].value,
+        ...this.form[2].value,
+      };
+      await this.keynoaSerice.set({ ...this.pkiProvider, ...formValues });
     } catch (error) {
       console.error(error);
     }
