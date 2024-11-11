@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input } from '@angular/core';
-import { ActionControl, AlertService, Column, gettext, Pagination } from '@c8y/ngx-components';
+import { ActionControl, AlertService, BuiltInActionType, Column, gettext, Pagination } from '@c8y/ngx-components';
 import { DevityCertificateData } from '~models/rest-reponse.model';
 import { CertificateAuhtorityActionService } from '~services/certificate-authority-action.service';
 import { DevityProxyService } from '~services/devity-proxy.service';
@@ -68,6 +68,10 @@ export class DevityCertificateAuthorityListComponent {
       icon: 'download',
       callback: (cert: DevityCertificateData) => this.onDownloadCert(cert),
       },
+      {
+        type: BuiltInActionType.Delete,
+        callback: (cert: DevityCertificateData) => this.onDeleteCert(cert),
+        },
   ];
   
   rows: (DevityCertificateData & { id: string })[] = [];
@@ -100,5 +104,13 @@ export class DevityCertificateAuthorityListComponent {
 
   onDownloadCert(cert: DevityCertificateData): void {
      this.caActionService.download(cert);
+  }
+
+  async onDeleteCert(cert: DevityCertificateData) {
+    const res = await this.caActionService.delete(cert.caId);
+    if (res.status === 'success') {
+      await this.reload();
+      this.refresh.next();
+    }
   }
 }
