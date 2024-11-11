@@ -201,6 +201,6 @@ export class CertificateWidgetComponent {
     }
 
     renew() {
-      this.certActionService.renew();
+      this.certActionService.renew(this.keynoaRawData.device.guid);
     }
 }

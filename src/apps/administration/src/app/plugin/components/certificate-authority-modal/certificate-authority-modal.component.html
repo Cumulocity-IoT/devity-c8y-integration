@@ -35,11 +35,12 @@
         }
         @case (1) {
           <!-- TODO insert form fields -->
-           Step 2 form fields
+          <formly-form [form]="formlyStep2" [fields]="step2Fields" [model]="step2Model"></formly-form>
+          
         }
         @case (2) {
           <!-- TODO insert form fields -->
-           Step 3 form fields
+          <formly-form [form]="formlyStep3" [fields]="step3Fields" [model]="step3Model"></formly-form>
         }
       }
     </div>

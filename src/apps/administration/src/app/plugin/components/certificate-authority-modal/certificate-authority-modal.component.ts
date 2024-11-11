@@ -3,6 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { PKIProvider } from '~models/pki-provider.model';
 import { KeynoaService } from '~services/keynoa.service';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Step2FormlyFieldConfig, Step3FormlyFieldConfig } from './formly-templates.model';
+
+
 
 @Component({
   selector: 'devity-certificate-authority-modal',
@@ -24,6 +28,14 @@ export class DevityCertificateAuthorityModalComponent {
     });
   }
 
+  formlyStep2 = new FormGroup({});
+  step2Fields: FormlyFieldConfig[] = [];
+  step2Model = {};
+
+  formlyStep3 = new FormGroup({});
+  step3Fields: FormlyFieldConfig[] = [];
+  step3Model = {};
+
   form: FormGroup[] = [
     // step 1
     new FormGroup({
@@ -31,13 +43,9 @@ export class DevityCertificateAuthorityModalComponent {
       caName: new FormControl('', [Validators.required]),
     }),
     // step 2
-    new FormGroup({
-      // TODO
-    }),
+    this.formlyStep2,
     // step 3
-    new FormGroup({
-      // TODO
-    }),
+    this.formlyStep3,
   ];
   stepTitles = ['First Step', 'Le Step 2', 'Step 3'];
   currentStep = 0;
@@ -54,7 +62,7 @@ export class DevityCertificateAuthorityModalComponent {
 
   constructor(
     private bsModalRef: BsModalRef,
-    private keynoaSerice: KeynoaService
+    private keynoaSerice: KeynoaService,
   ) {}
 
   close(): void {
@@ -67,6 +75,18 @@ export class DevityCertificateAuthorityModalComponent {
 
   next(): void {
     if (this.currentStep < this.totalSteps - 1) this.currentStep++;
+    if (this.currentStep === 1 || this.currentStep === 2) {
+      this.reloadFormlyStep(this.currentStep);
+    }
+  }
+
+  private reloadFormlyStep(currentStep: 1 | 2) {
+    if (currentStep === 1) {
+      this.step2Fields = Step2FormlyFieldConfig;
+    } else if (currentStep === 2) {
+     this.step3Fields = Step3FormlyFieldConfig;
+    }
+    
   }
 
   async submit(): Promise<void> {
