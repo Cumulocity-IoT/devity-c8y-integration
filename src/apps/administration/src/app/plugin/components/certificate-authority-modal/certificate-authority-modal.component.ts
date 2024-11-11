@@ -32,13 +32,11 @@ export class DevityCertificateAuthorityModalComponent {
     }),
     // step 2
     new FormGroup({
-      firstname: new FormControl('', [Validators.required]),
-      lastname: new FormControl('', [Validators.required]),
+      // TODO
     }),
     // step 3
     new FormGroup({
-      street: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required]),
+      // TODO
     }),
   ];
   stepTitles = ['First Step', 'Le Step 2', 'Step 3'];
