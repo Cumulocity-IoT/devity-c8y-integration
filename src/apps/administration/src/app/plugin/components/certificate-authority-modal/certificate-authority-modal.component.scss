@@ -1,0 +1,50 @@
+.stepper {
+  padding: 0;
+  margin: 0 0 24px;
+  list-style: none;
+  display: flex;
+  counter-reset: wizard;
+
+  > li {
+    flex: 1 0 1%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    &::before {
+      counter-increment: wizard;
+      content: counter(wizard);
+      display: flex;
+      width: 1.6em;
+      height: 1.6em;
+      font-size: 1.2em;
+      margin-bottom: 4px;
+      border-radius: 50%;
+      justify-content: center;
+      align-items: center;
+      background-color: #ddd;
+      position: relative;
+      z-index: 5;
+    }
+
+    &.active::before {
+      color: var(--c8y-btn-primary-color-default);
+      background-color: var(--c8y-btn-primary-background-default);
+    }
+
+    &:nth-child(n + 2)::after {
+      content: "";
+      display: block;
+      position: absolute;
+      z-index: 1;
+      font-size: 1.2em;
+      top: 0.8em;
+      right: 50%;
+      background-color: #eee;
+      height: 1px;
+      width: 100%;
+    }
+  }
+}

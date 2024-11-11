@@ -25,7 +25,7 @@ export class DevityPKIProviderComponent implements OnInit {
         const regex = /^\/auth-configuration\/pki-provider\/([0-9]*)/;
         const match = event.url.match(regex);
 
-        this.id = (match && match[1]) ? match[1] : null;
+        this.id = match && match[1] ? match[1] : null;
       }
     });
   }
@@ -34,7 +34,19 @@ export class DevityPKIProviderComponent implements OnInit {
     void this.reload();
   }
 
-  certificateAuthorityModal(provider: PKIProvider): void {
+  async delete(provider: PKIProvider): Promise<void> {
+    this.isLoading = true;
+    await this.keynoaService.delete(provider.id);
+    this.isLoading = false;
+
+    await this.reload;
+  }
+
+  openCAModal(provider: PKIProvider): void {
+    if (this.id) {
+      provider = this.providers.find((pki) => pki.id === this.id);
+    }
+
     const modalRef = this.bdModalService.show(
       DevityCertificateAuthorityModalComponent,
       {
@@ -48,15 +60,7 @@ export class DevityPKIProviderComponent implements OnInit {
     modalRef.onHide.subscribe(() => this.reload());
   }
 
-  async delete(provider: PKIProvider): Promise<void> {
-    this.isLoading = true;
-    await this.keynoaService.delete(provider.id);
-    this.isLoading = false;
-
-    await this.reload;
-  }
-
-  openModal(provider?: PKIProvider): void {
+  openPKIModal(provider?: PKIProvider): void {
     const modalRef = this.bdModalService.show(
       DevityAdminPKIProviderModalComponent,
       {

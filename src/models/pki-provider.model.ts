@@ -6,7 +6,4 @@ export interface PKIProvider extends IManagedObject {
   url: string;
   clientID: string;
   clientSecret: string;
-  caName?: string;
-  caType?: string;
-  caIds?: number[];
 }
