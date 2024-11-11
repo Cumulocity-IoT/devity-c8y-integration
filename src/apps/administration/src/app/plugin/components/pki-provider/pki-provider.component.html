@@ -1,10 +1,18 @@
 <c8y-title>{{ 'PKI Provider' | translate }}</c8y-title>
 
-<!-- add -->
-<c8y-action-bar-item [placement]="'right'" [priority]="100">
-  <button type="button" class="btn btn-link" (click)="openModal()">
+<!-- add PKI -->
+ <c8y-action-bar-item [placement]="'left'" [priority]="100">
+  <button type="button" class="btn btn-link" (click)="openPKIModal()">
     <i [c8yIcon]="'add'"></i>
     {{ 'Add PKI Provider' | translate }}
+  </button>
+</c8y-action-bar-item>
+
+<!-- add CA -->
+<c8y-action-bar-item [placement]="'right'" [priority]="100">
+  <button type="button" class="btn btn-link" [disabled]="!id" (click)="openCAModal()">
+    <i [c8yIcon]="'add'"></i>
+    {{ 'Add Certifiacte Authority' | translate }}
   </button>
 </c8y-action-bar-item>
 
@@ -23,12 +31,15 @@
   } @else {
     <div class="col-md-4">
       <div class="card">
+        <div class="card-header separator-bottom">
+          <h3 translate>PKI Providers</h3>
+        </div>
         <c8y-list-group>
           @for (provider of providers; track provider.id) {
             <c8y-li>
               <a [routerLink]="[provider.id]">{{ provider.url }}</a>
 
-              <c8y-li-action icon="pencil" (click)="openModal(provider)" translate>Edit</c8y-li-action>
+              <c8y-li-action icon="pencil" (click)="openPKIModal(provider)" translate>Edit</c8y-li-action>
               <c8y-li-action icon="trash" (click)="delete(provider)" translate>Delete</c8y-li-action>
             </c8y-li>
           }
