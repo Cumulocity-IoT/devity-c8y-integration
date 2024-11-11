@@ -49,7 +49,7 @@ export const Step2FormlyFieldConfig: FormlyFieldConfig[] = [
         className: 'col-md-6 p-l-0',
         key: 'intermediateCaTTL',
         type: 'input',
-        defaultValue: 2,
+        defaultValue: 5,
         templateOptions: {
           label: 'Intermediate CA TTL',
           description: 'The time-to-live (TTL) for the Intermediate Certificate Authority.',
@@ -62,7 +62,7 @@ export const Step2FormlyFieldConfig: FormlyFieldConfig[] = [
         className: 'col-md-6 p-r-0',
         key: 'intermediateTimeUnit',
         type: 'select',
-        defaultValue: 'hours',
+        defaultValue: 'years',
         templateOptions: {
           label: 'Time Unit',
           description: 'Specify the unit of time for the TTL.',
@@ -136,7 +136,7 @@ export const Step2FormlyFieldConfig: FormlyFieldConfig[] = [
             className: 'col-md-6 p-l-0',
             key: 'rootCaTTL',
             type: 'input',
-            defaultValue: 2,
+            defaultValue: 10,
             templateOptions: {
               label: 'Root CA TTL',
               description: 'The time-to-live (TTL) for the Root Certificate Authority.',
@@ -149,15 +149,15 @@ export const Step2FormlyFieldConfig: FormlyFieldConfig[] = [
             className: 'col-md-6 p-r-0',
             key: 'rootTimeUnit',
             type: 'select',
-            defaultValue: 'Hours',
+            defaultValue: 'years',
             templateOptions: {
               label: 'Time Unit',
               description: 'Specify the unit of time for the TTL.',
               options: [
-                { value: 'Hours', label: 'Hours' },
-                { value: 'Days', label: 'Days' },
-                { value: 'Months', label: 'Months' },
-                { value: 'Years', label: 'Years' },
+                { value: 'hours', label: 'Hours' },
+                { value: 'days', label: 'Days' },
+                { value: 'months', label: 'Months' },
+                { value: 'years', label: 'Years' },
               ],
               required: true,
             },
@@ -179,7 +179,7 @@ export interface CertificatePolicyFormlyResult {
     certTTL: number;
     certTimeUnit: 'hours' | 'days' | 'months' | 'years';
     renewBefore: number;
-    renewBeforeTimeUnit: 'Hours' | 'Days' | 'Months' | 'Years';
+    renewBeforeTimeUnit: 'hours' | 'days' | 'months' | 'years';
     keyAlgorithm: 'RSA-3072' | 'RSA-4096' | 'EC-256' | 'EC-384' | 'EC-521'; // Adjust as necessary
     signAlgorithm: 'SHA256' | 'SHA384' | 'SHA512';
     extendedKeyUsage?: Array<'clientAuth' | 'codeSigning' | 'serverAuth' | 'emailProtection' | 'timeStamping' | 'ocspSigning'>;
@@ -320,7 +320,7 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
             className: 'col-md-6 p-l-0',
             key: 'certTTL',
             type: 'input',
-            defaultValue: 2,
+            defaultValue: 3,
             templateOptions: {
               label: 'Certificate TTL',
               description: 'The time-to-live (TTL) for the Certificate.',
@@ -333,7 +333,7 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
             className: 'col-md-6 p-r-0',
             key: 'certTimeUnit',
             type: 'select',
-            defaultValue: 'hours',
+            defaultValue: 'months',
             templateOptions: {
               label: 'Time Unit',
               description: 'Specify the unit of time for the TTL.',
@@ -426,6 +426,9 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
                 className: 'col-md-6 p-l-0',
                 key: 'extendedKeyUsage',
                 type: 'multi-select',
+                defaultValue: [
+                    "clientAuth"
+                ],
                 templateOptions: {
                   label: 'Extended Key Usage ',
                   multiple: true,
@@ -443,6 +446,11 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
                 className: 'col-md-6 p-r-0',
                 key: 'keyUsage',
                 type: 'multi-select',
+                defaultValue: [
+                    "digitalSignature",
+                    "keyEncipherment",
+                    "keyAgreement"
+                ],
                 templateOptions: {
                   label: 'Key Usage',
                   multiple: true,

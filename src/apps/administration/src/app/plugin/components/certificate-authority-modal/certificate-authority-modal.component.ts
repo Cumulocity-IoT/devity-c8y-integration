@@ -22,6 +22,7 @@ import { isNil } from 'lodash';
   styleUrl: './certificate-authority-modal.component.scss',
 })
 export class DevityCertificateAuthorityModalComponent {
+  existingCANames: string[] = [];
   @Input()
   get pkiProvider(): PKIProvider {
     return this._pkiProvider;
@@ -140,7 +141,7 @@ export class DevityCertificateAuthorityModalComponent {
       const caWithId = cas.find((ca) => ca.pkiPath === createdCA.pkiPath);
 
       const c8yConfig = {
-        c8yUrl: 'thin-edge-io.eu-latest.cumulocity.com',
+        c8yUrl: `${window.location.protocol}//${window.location.host}/`,
         caId: caWithId.caId,
         cloudCaFingerprintPrimary:
           '5622207e1ba285f172756f6019af92ac808ed63286e24dfecc1e79873fb5d140f1ceb7133f2476e89a5f75f711f9813a9fbb8fd5287f64adfdcc53b864f9bdc5',

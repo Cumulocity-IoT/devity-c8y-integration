@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input } from '@angular/core';
 import { ActionControl, AlertService, BuiltInActionType, Column, gettext, Pagination } from '@c8y/ngx-components';
+import { PKIProvider } from '~models/pki-provider.model';
 import { DevityCertificateData } from '~models/rest-reponse.model';
 import { CertificateAuhtorityActionService } from '~services/certificate-authority-action.service';
 import { DevityProxyService } from '~services/devity-proxy.service';
@@ -10,6 +11,7 @@ import { KeynoaService } from '~services/keynoa.service';
   templateUrl: './certificate-authority-list.component.html',
 })
 export class DevityCertificateAuthorityListComponent {
+  
   /** Provider ID */
   @Input() set id(value: string | number) {
     if (value) {
@@ -17,7 +19,8 @@ export class DevityCertificateAuthorityListComponent {
       this.reload();
     }
   }
-  _providerId: string | number;
+  private _providerId: string | number;
+  provider: PKIProvider;
 
   /** Takes an event emitter. When an event is emitted, the grid will be reloaded. */
   refresh = new EventEmitter<void>();
@@ -85,9 +88,10 @@ export class DevityCertificateAuthorityListComponent {
 
   async reload() {
     try {
-      const caID = (await this.keynoaService.getProvider(this._providerId)).caId;
+      this.provider = (await this.keynoaService.getProvider(this._providerId));
+      const caId = this.provider.caId;
       const cas = await this.proxyService.getCertificateAuthorities();
-      const cert = cas.find(ca => ca.caId === caID);
+      const cert = cas.find(ca => ca.caId === caId);
       if (cert) {
         this.rows = [{ ...cert, id: cert.caId.toString() }];
       } else {
@@ -108,6 +112,14 @@ export class DevityCertificateAuthorityListComponent {
 
   async onDeleteCert(cert: DevityCertificateData) {
     const res = await this.caActionService.delete(cert.caId);
+    if (this.provider) {
+      if (this.provider.c8yConfigId) {
+        this.proxyService.deleteCumulocityConfig(this.provider.c8yConfigId);
+      }
+      if (this.provider.thinEdgeConfigId) {
+        this.proxyService.deleteThinEdgeConfig(this.provider.thinEdgeConfigId);
+      }
+    }
     if (res.status === 'success') {
       await this.reload();
       this.refresh.next();

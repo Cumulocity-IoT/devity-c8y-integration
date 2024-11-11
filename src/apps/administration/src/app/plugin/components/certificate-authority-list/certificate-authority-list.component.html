@@ -1,5 +1,5 @@
 <div class="card-header d-flex separator-bottom">
-  <h3 class="flex-grow">Certificate Authorities of #{{ _providerId }}</h3>
+  <h3 class="flex-grow">Certificate Authority #{{ provider?.caId }}</h3>
 
   <a [routerLink]="['/auth-configuration', 'pki-provider']">
     <i [c8yIcon]="'close'"></i>

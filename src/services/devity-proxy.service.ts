@@ -46,7 +46,7 @@ export class DevityProxyService {
         'Content-Type': 'application/json',
       },
       body: {
-        serialNumber: certificateSerialNumber,
+        serial_number: certificateSerialNumber,
       },
     };
     return this.proxy(request);
@@ -225,6 +225,16 @@ export class DevityProxyService {
       return this.proxy<ThinEdgeConfiguration>(request);
   }
 
+  deleteThinEdgeConfig(id: ThinEdgeConfiguration['id']) {
+    const request: ProxyRequest = {
+        url: `/thinEdgeConfigurations/${id}`,
+        method: 'DELETE',
+        headers: { Accept: 'application/json' },
+        body: null,
+      };
+      return this.proxy(request);
+  }
+
   createDeviceSelector(deviceSelector: { configId: ThinEdgeConfiguration['id']; configType: string; weight: number; patterns: { MODEL: string; }; }) {
     const request: ProxyRequest = {
         url: `/deviceSelectors`,
@@ -263,6 +273,16 @@ export class DevityProxyService {
         body: config,
       };
       return this.proxy<CumulocityConfiguration>(request);
+  }
+
+  deleteCumulocityConfig(id: CumulocityConfiguration['id']) {
+    const request: ProxyRequest = {
+        url: `/cumulocityConfigurations/${id}`,
+        method: 'DELETE',
+        headers: { Accept: 'application/json' },
+        body: null,
+      };
+      return this.proxy(request);
   }
 
   getCumulocityConfig(
