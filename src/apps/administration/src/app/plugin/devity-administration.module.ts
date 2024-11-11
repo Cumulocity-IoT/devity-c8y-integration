@@ -12,7 +12,6 @@ import { DevityCertificateAuthorityModalComponent } from './components/certifica
 import { PKIProviderTabFactory } from './components/pki-provider/pki-provider-tab.factory';
 import { DevityPKIProviderComponent } from './components/pki-provider/pki-provider.component';
 import { IsFutureDatePipe } from './components/certificate-authority-list/is-expired.pipe';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { FormlyFieldMultiSelect } from '~components/formly/multi-select.type.component';
 
 @NgModule({
@@ -21,7 +20,6 @@ import { FormlyFieldMultiSelect } from '~components/formly/multi-select.type.com
     CoreModule,
     RouterModule,
     FormsModule,
-    NgSelectModule,
     FormlyModule.forRoot({
       types: [{ name: 'multi-select', component: FormlyFieldMultiSelect }],
     }),
