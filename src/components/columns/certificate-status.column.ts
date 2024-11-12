@@ -9,7 +9,7 @@ export class CertificateStatusColumn extends BaseColumn {
     this.header = 'Status';
     this.cellRendererComponent = CertificateStatusCellRendererComponent;
     this.sortable = false;
-    this.filterable = true;
+    this.filterable = false;
     this.gridTrackSize = '100px';
     // TODO filter…
     // this.filteringFormRendererComponent =

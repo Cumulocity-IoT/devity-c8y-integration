@@ -40,7 +40,7 @@ export const CERTIFIACTE_LIST_COLUMNS: Column[] = [
   },
   {
     name: 'issuingCA',
-    header: 'issuing CA',
+    header: 'Issuing CA',
     path: 'authoritySubjectCn',
     filterable: false,
     sortable: false,
@@ -51,7 +51,7 @@ export const CERTIFIACTE_LIST_COLUMNS: Column[] = [
     header: 'Issue Date',
     path: 'issuedAt',
     filterable: false,
-    sortable: false,
+    // sortable: true,
     cellRendererComponent: DateCellRendererComponent,
   },
   {
