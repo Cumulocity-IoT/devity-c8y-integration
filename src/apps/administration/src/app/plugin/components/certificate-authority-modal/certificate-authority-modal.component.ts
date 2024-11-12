@@ -14,6 +14,7 @@ import { FormlyHelperService } from './formly-helper.service';
 import { DevityProxyService } from '~services/devity-proxy.service';
 import { AlertService } from '@c8y/ngx-components';
 import { isNil } from 'lodash';
+import { TrustedCertificateService } from '@c8y/client';
 // import moment from 'moment';
 
 @Component({
@@ -88,7 +89,8 @@ export class DevityCertificateAuthorityModalComponent {
     private keynoaSerice: KeynoaService,
     private proxy: DevityProxyService,
     private formlyHelper: FormlyHelperService,
-    private alert: AlertService
+    private alert: AlertService,
+    private trustedCertService: TrustedCertificateService
   ) {}
 
   close(): void {
@@ -140,6 +142,15 @@ export class DevityCertificateAuthorityModalComponent {
       const cas = await this.proxy.getCertificateAuthorities();
       const caWithId = cas.find((ca) => ca.pkiPath === createdCA.pkiPath);
 
+      console.log('Creating Cumulocity Trusted Certificate...');
+      await this.trustedCertService.create({
+        name: caName,
+        fingerprint: caWithId.fingerprint,
+        certInPemFormat: caWithId.certificate,
+        autoRegistrationEnabled: true,
+        status: 'ENABLED',
+      });
+      
       const c8yConfig = {
         c8yUrl: `${window.location.protocol}//${window.location.host}/`,
         caId: caWithId.caId,
