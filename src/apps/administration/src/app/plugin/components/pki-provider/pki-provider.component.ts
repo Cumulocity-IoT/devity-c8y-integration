@@ -5,7 +5,6 @@ import { PKIProvider } from '~models/pki-provider.model';
 import { KeynoaService } from '~services/keynoa.service';
 import { DevityAdminPKIProviderModalComponent } from '../admin-pki-provider-modal/admin-pki-provider-modal.component';
 import { DevityCertificateAuthorityModalComponent } from '../certificate-authority-modal/certificate-authority-modal.component';
-import { has } from 'lodash';
 
 @Component({
   selector: 'devity-pki-provider',
@@ -16,15 +15,15 @@ export class DevityPKIProviderComponent implements OnInit {
   isLoading = true;
   id: string | number;
 
-  get providerHasCA(): boolean {
-    if (!this.id || !this.providers) return false;
+  // get providerHasCA(): boolean {
+  //   if (!this.id || !this.providers) return false;
 
-    const pki = this.providers.find((pki) => pki.id === this.id);
+  //   const pki = this.providers.find((pki) => pki.id === this.id);
 
-    if (!pki) return false;
+  //   if (!pki) return false;
 
-    return has(pki, 'caId') && !!pki['caId'];
-  }
+  //   return has(pki, 'caId') && !!pki['caId'];
+  // }
 
   constructor(
     private bdModalService: BsModalService,
