@@ -12,7 +12,7 @@ import { firstValueFrom } from 'rxjs';
 import { DevityDevice, DevityDeviceApp } from '~models/rest-reponse.model';
 
 export type ActionResult =
-  | { status: 'success' | 'canceled' }
+  | { status: 'success'; response?: any;  } | { status: 'canceled'}
   | { status: 'error'; error: unknown };
 
 @Injectable({
@@ -45,6 +45,7 @@ export class CertificateActionService {
           issuingCaId,
           certificateSerialNumber
         );
+        await this.devityProxyService.rotateIssuingCa(issuingCaId);
         this.alertService.success(
           `Certificate ${certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
         );

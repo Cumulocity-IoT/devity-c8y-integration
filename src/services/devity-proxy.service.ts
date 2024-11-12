@@ -51,6 +51,20 @@ export class DevityProxyService {
     return this.proxy(request);
   }
 
+  rotateIssuingCa(issuingCaId: number) {
+    const url = `/issuingCAs/${issuingCaId}/crl/rotate`;
+    const request: ProxyRequest = {
+      url,
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: null
+    };
+    return this.proxy(request);
+  }
+
   renewDevice(guid: DevityDevice['guid']) {
     const request: ProxyRequest = {
       url: `/device/${guid}/renew`,
