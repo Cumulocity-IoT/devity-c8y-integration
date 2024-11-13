@@ -148,16 +148,16 @@ export class DevityCertificateAuthorityModalComponent {
         fingerprint: caWithId.fingerprint,
         certInPemFormat: caWithId.certificate,
         autoRegistrationEnabled: true,
-        status: 'ENABLED',
+        status: 'ENABLED'
       });
       
       const c8yConfig = {
-        c8yUrl: `${window.location.protocol}//${window.location.host}/`,
+        c8yUrl: `${window.location.protocol}//${window.location.host}`,
         caId: caWithId.caId,
         cloudCaFingerprintPrimary:
-          '5622207e1ba285f172756f6019af92ac808ed63286e24dfecc1e79873fb5d140f1ceb7133f2476e89a5f75f711f9813a9fbb8fd5287f64adfdcc53b864f9bdc5',
+          'c509cd5452659ae94c673a47b68e2c0aa8ad177804c8ae2949306e9232b70ab5b5334d1abe53a25ecaf0c609871b33849773b4edf277dd346069038f695d76fb',
         cloudCaFingerprintSecondary: null,
-        useOsTrustAnchor: true,
+        useOsTrustAnchor: false,
       };
       console.log('Creating Cumulocity config...');
       const c8yConfigResponse = await this.proxy.createCumulocityConfig(
