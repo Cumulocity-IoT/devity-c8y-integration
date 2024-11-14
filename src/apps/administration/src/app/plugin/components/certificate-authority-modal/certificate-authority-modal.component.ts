@@ -159,7 +159,7 @@ export class DevityCertificateAuthorityModalComponent {
         cloudCaFingerprintSecondary: null,
         useOsTrustAnchor: false,
       };
-      console.log('Creating Cumulocity config...');
+      console.log('Creating Cumulocity config...', c8yConfig);
       const c8yConfigResponse = await this.proxy.createCumulocityConfig(
         c8yConfig
       );
