@@ -152,7 +152,7 @@ export class DevityCertificateAuthorityModalComponent {
       });
       
       const c8yConfig = {
-        c8yUrl: `${window.location.protocol}//${window.location.host}`,
+        c8yUrl: `${window.location.host}`,
         caId: caWithId.caId,
         cloudCaFingerprintPrimary:
           'c509cd5452659ae94c673a47b68e2c0aa8ad177804c8ae2949306e9232b70ab5b5334d1abe53a25ecaf0c609871b33849773b4edf277dd346069038f695d76fb',
