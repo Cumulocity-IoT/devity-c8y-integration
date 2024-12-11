@@ -99,6 +99,18 @@ export interface DevityCertificateData {
   subOrganization: string;
 }
 
+export interface IssuingCA {
+  id: number;
+  caName: string;
+  caCertificateId: number;
+  protected: boolean;
+  internal: boolean;
+  pkiPath: string;
+  defaultCertificateTemplateId: number;
+  hidden: boolean;
+  acmeDirectory: string;
+}
+
 export const DevityCertificateStatus = {
   VALID: 'valid',
   EXPIRED: 'expired',

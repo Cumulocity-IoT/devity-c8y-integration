@@ -9,6 +9,7 @@ import {
   DevityDevice,
   DevityDeviceApp,
   DevityDeviceCertificate,
+  IssuingCA,
   ThinEdgeConfiguration,
   TrustAnchorCertificate,
 } from '~models/rest-reponse.model';
@@ -184,7 +185,7 @@ export class DevityProxyService {
       headers: { Accept: 'application/json' },
       body: null,
     };
-    return this.proxy<CaCertificateDto>(request);
+    return this.proxy<IssuingCA>(request);
   }
 
   getCertificateAuthority(caId: CumulocityConfiguration['caId']) {

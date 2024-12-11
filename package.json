@@ -1,6 +1,6 @@
 {
   "name": "devity-sps-demo",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "",
   "scripts": {
     "start": "ng serve -u https://partner-devity.eu-latest.cumulocity.com",

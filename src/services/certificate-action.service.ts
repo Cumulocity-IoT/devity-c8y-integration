@@ -41,11 +41,12 @@ export class CertificateActionService {
       );
 
       try {
+        const ca = await this.devityProxyService.getIssuingCA(issuingCaId);
         await this.devityProxyService.revokeCertificate(
-          issuingCaId,
+          ca.id,
           certificateSerialNumber
         );
-        await this.devityProxyService.rotateIssuingCa(issuingCaId);
+        await this.devityProxyService.rotateIssuingCa(ca.id);
         this.alertService.success(
           `Certificate ${certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
         );
