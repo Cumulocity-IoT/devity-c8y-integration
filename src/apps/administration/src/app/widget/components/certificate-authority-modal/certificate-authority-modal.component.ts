@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { PKIProvider } from '~models/pki-provider.model';
-import { KeynoaService } from '~services/keynoa.service';
+// import { KeynoaService } from '~services/keynoa.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   CertificateAuthorityFormlyResult,
@@ -11,16 +11,21 @@ import {
   Step3FormlyFieldConfig,
 } from './formly-templates.model';
 import { FormlyHelperService } from './formly-helper.service';
-import { DevityProxyService } from '~services/devity-proxy.service';
+// import { DevityProxyService } from '~services/devity-proxy.service';
 import { AlertService } from '@c8y/ngx-components';
-import { isNil } from 'lodash';
+import { DevityProxyService } from '~services/devity-proxy.service';
+import { CumulocityConfiguration } from '~models/rest-reponse.model';
 import { TrustedCertificateService } from '@c8y/client';
+import { KeynoaService } from '~services/keynoa.service';
+import { isNil } from 'lodash';
+// import { TrustedCertificateService } from '@c8y/client';
 // import moment from 'moment';
 
 @Component({
   selector: 'devity-certificate-authority-modal',
   templateUrl: './certificate-authority-modal.component.html',
   styleUrl: './certificate-authority-modal.component.scss',
+  standalone: false,
 })
 export class DevityCertificateAuthorityModalComponent {
   existingCANames: string[] = [];
@@ -86,7 +91,7 @@ export class DevityCertificateAuthorityModalComponent {
 
   constructor(
     private bsModalRef: BsModalRef,
-    private keynoaSerice: KeynoaService,
+    private keynoaService: KeynoaService,
     private proxy: DevityProxyService,
     private formlyHelper: FormlyHelperService,
     private alert: AlertService,
@@ -142,20 +147,30 @@ export class DevityCertificateAuthorityModalComponent {
       const cas = await this.proxy.getCertificateAuthorities();
       const caWithId = cas.find((ca) => ca.pkiPath === createdCA.pkiPath);
 
+      console.log('Assign permissions...');
+      const resources = await this.proxy.getPermissions();
+      const roleIds = resources.resourceRoles.map(resource => resource.roles.map((r) => r.roleId)).flat();
+      const roles = await this.proxy.getRolesForCA(caWithId.id);
+      const firstMatching = roles.find((r) => r.roleName.startsWith('Head'));
+      if (firstMatching) {
+        roleIds.push(firstMatching.roleId);
+      }
+      await this.proxy.setPermissions(Array.from(new Set(roleIds)));
+
+      
       console.log('Creating Cumulocity Trusted Certificate...');
       await this.trustedCertService.create({
         name: caName,
-        fingerprint: caWithId.fingerprint,
-        certInPemFormat: caWithId.certificate,
+        fingerprint: caWithId.caCertificate.fingerprint,
+        certInPemFormat: caWithId.caCertificate.certificate,
         autoRegistrationEnabled: true,
-        status: 'ENABLED'
+        status: 'ENABLED',
       });
-      
-      const c8yConfig = {
+
+      const c8yConfig: Omit<CumulocityConfiguration, 'id'> = {
         c8yUrl: `${window.location.host}`,
-        caId: caWithId.caId,
-        cloudCaFingerprintPrimary:
-          'c509cd5452659ae94c673a47b68e2c0aa8ad177804c8ae2949306e9232b70ab5b5334d1abe53a25ecaf0c609871b33849773b4edf277dd346069038f695d76fb',
+        issuingCaId: caWithId.id,
+        cloudCaFingerprintPrimary: caWithId.caCertificate.fingerprint,
         cloudCaFingerprintSecondary: null,
         useOsTrustAnchor: false,
       };
@@ -163,16 +178,14 @@ export class DevityCertificateAuthorityModalComponent {
       const c8yConfigResponse = await this.proxy.createCumulocityConfig(
         c8yConfig
       );
-      console.log('Creating Certificate template...');
-      const certTemplateResponse = await this.proxy.createCertificateTemplate(
-        config.defaultCertificateTemplate
-      );
       console.log('Creating Thin Edge config...');
       const thinEdgeConfig = {
         cumulocityConfigurationId: c8yConfigResponse.id,
-        certificateTemplateId: certTemplateResponse.id,
+        certificateTemplateId: 0,
+        certificateTemplate: config.defaultCertificateTemplate,
         templateName: 'my-thinEdge-configuration-' + caName,
       };
+
       const thinEdgeConfigResponse = await this.proxy.createThinEdgeConfig(
         thinEdgeConfig
       );
@@ -189,11 +202,11 @@ export class DevityCertificateAuthorityModalComponent {
       await this.proxy.createDeviceSelector(deviceSelector);
 
       console.log('Creating Keynoa MO representation...');
-      await this.keynoaSerice.set({
+      await this.keynoaService.set({
         ...this.pkiProvider,
-        caId: caWithId.caId,
+        caId: caWithId.id,
         c8yConfigId: c8yConfigResponse.id,
-        certTemplateId: certTemplateResponse.id,
+        certTemplateId: thinEdgeConfigResponse.certificateTemplateId,
         thinEdgeConfigId: thinEdgeConfigResponse.id,
       });
 

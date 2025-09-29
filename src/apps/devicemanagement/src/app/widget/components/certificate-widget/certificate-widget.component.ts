@@ -6,7 +6,6 @@ import { DevityProxyService } from '~services/devity-proxy.service';
 import { isNil, maxBy } from 'lodash';
 import {
   CumulocityConfiguration,
-  DevityCertificateStatus,
   DevityDevice,
   DevityDeviceApp,
   DevityDeviceCertificate,
@@ -17,6 +16,7 @@ import { CertificateActionService } from '~services/certificate-action.service';
 @Component({
   templateUrl: './certificate-widget.component.html',
   styleUrl: './certificate-widget.component.less',
+  standalone: false,
 })
 export class CertificateWidgetComponent {
   device: IManagedObject;
@@ -86,10 +86,7 @@ export class CertificateWidgetComponent {
 
   private isRevoked(cert: DevityDeviceCertificate) {
     const now = new Date();
-    return (
-      cert.status === DevityCertificateStatus.REVOKED ||
-      (!isNil(cert.revokedAt) && now >= new Date(cert.revokedAt))
-    );
+    return !isNil(cert.revokedAt) && now >= new Date(cert.revokedAt);
   }
 
   private async loadKeynoaData() {
@@ -116,12 +113,8 @@ export class CertificateWidgetComponent {
 
   private async loadAndDisplayCert(guid: DevityDevice['guid']) {
     try {
-      const certs = await this.devityProxy.getCertificates(guid);
-      // TODO: appInstanceIds might get extended later
-      const relevantCerts = certs.filter(c => c.appInstanceId === 'thin-edge1');
-      let certToShow: DevityDeviceCertificate;
-      certToShow = maxBy(relevantCerts, (cert) => cert.issuedAt);
-
+      const certs = await this.devityProxy.getCertificates(guid, 'thin-edge1');
+      const certToShow = maxBy(certs, (cert) => cert.issuedAt);
       if (certToShow) {
         const expirationDate = new Date(certToShow.expiredAt);
         this.cert = {
@@ -158,13 +151,16 @@ export class CertificateWidgetComponent {
 
   private async loadAndDisplayTrustAnchor(c8yConfig: CumulocityConfiguration) {
     try {
-      const trustAnchor = await this.devityProxy.getTrustAnchor(
+      const trustAnchors = await this.devityProxy.getTrustAnchors(
         c8yConfig.cloudCaFingerprintPrimary
       );
-      this.trustAnchor = {
-        subjectCN: trustAnchor.subjectCn,
-        expirationDate: trustAnchor.expirationTime,
-      };
+      if (trustAnchors.length) {
+        const anchor = trustAnchors[0];
+        this.trustAnchor = {
+          subjectCN: anchor.subjectCn,
+          expirationDate: anchor.expirationTime,
+        };
+      }
     } catch (e) {
       console.error('Could not load Trust Anchor.', e);
     }
@@ -175,7 +171,7 @@ export class CertificateWidgetComponent {
   ) {
     try {
       const certificateAuthority =
-        await this.devityProxy.getCertificateAuthority(c8yConfig.caId);
+        await this.devityProxy.getCertificateAuthority(c8yConfig.issuingCaId);
       this.issuingCA = {
         caCertificateId: certificateAuthority.caCertificateId,
         subjectCN: certificateAuthority.subjectCn,
@@ -230,9 +226,5 @@ export class CertificateWidgetComponent {
           console.error(res.error);
         }
       });
-  }
-
-  renew() {
-    this.certActionService.renew(this.keynoaRawData.device.guid);
   }
 }

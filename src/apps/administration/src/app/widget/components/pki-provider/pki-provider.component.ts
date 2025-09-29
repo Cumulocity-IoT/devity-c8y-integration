@@ -9,6 +9,7 @@ import { DevityCertificateAuthorityModalComponent } from '../certificate-authori
 @Component({
   selector: 'devity-pki-provider',
   templateUrl: './pki-provider.component.html',
+  standalone: false
 })
 export class DevityPKIProviderComponent implements OnInit {
   providers?: PKIProvider[];

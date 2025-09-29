@@ -7,6 +7,7 @@ import { KeynoaService } from '~services/keynoa.service';
 @Component({
   selector: 'devity-admin-pki-providermodal',
   templateUrl: './admin-pki-provider-modal.component.html',
+  standalone: false
 })
 export class DevityAdminPKIProviderModalComponent {
   @Input()

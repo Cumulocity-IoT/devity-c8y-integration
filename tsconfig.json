@@ -12,7 +12,7 @@
     "importHelpers": true,
     "lib": ["ES2022", "dom"],
     "module": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
     "noImplicitOverride": true,

@@ -16,7 +16,7 @@ export interface DevityDevice {
   replacedAt: string | null; // Can use `Date` if you prefer date objects
   allowDeviceReplacement: boolean;
 }
-
+// TODO: DevityDeviceCertificate has changed check demo
 export interface DevityDeviceCertificate {
   deviceGuid: string;
   appInstanceId: string;
@@ -28,9 +28,59 @@ export interface DevityDeviceCertificate {
   expiredAt: number;
   /** Timestamp in milliseconds, nullable */
   revokedAt: number | null;
-  // calculated status (valid/revoked/expired)
-  status?: DevityCertificateStatus;
 }
+
+/**
+ * data class DeviceCertificateDto(
+    @Schema(
+        description = "the ID of the leaf certificate",
+        example = "1L",
+    )
+    override val leafCertificateId: Long? = null,
+    @Schema(
+        description = "the serial number of the certificate for the application on device",
+        example = "0A:81:9D:D8:C5:E5:99:0C:B7:AD:68:EA:87:B2:A5:67",
+    )
+    override val certificateSerialNumber: String,
+    @Schema(
+        description = "the SHA2-512 fingerprint of the CA, who issues the certificate for the application on device",
+        example =
+            "074a66319673cba1fd1ead3805d71197e1d3578fc4d4a090ccfa5168ce8c75705d1" +
+                "fefc445959449f541aecb86937160bdcb5aff438e968cbda44be1ef32df54",
+    )
+    override val caFingerprint: String,
+    @Schema(
+        description = "the identifying guid for the device",
+        example = "ece992be-5e56-4a64-9dd5-264c7927481f",
+    )
+    override val deviceGuid: String?,
+    @Schema(
+        description = "the identifier for the application instance",
+        example = "mqtt1",
+    )
+    override val appInstanceId: String,
+    @Schema(
+        description = "the time, when the certificate for the application on device is issued",
+        example = "2024-07-01 00:00:00",
+    )
+    override val issuedAt: Date,
+    @Schema(
+        description = "the time, when the certificate for the application on device is expired",
+        example = "2025-10-01 00:00:00",
+    )
+    override val expiredAt: Date,
+    @Schema(
+        description = "the time, when the certificate for the application on device is revoked",
+        example = "2024-08-01 00:00:00",
+    )
+    override val revokedAt: Date?,
+    @Schema(
+        description = "Subject CN",
+        example = "test",
+    )
+    override val certName: String,
+)
+ */
 
 export interface DevityDeviceApp {
   deviceGuid: string;
@@ -42,9 +92,10 @@ export interface DevityDeviceApp {
 export interface CumulocityConfiguration {
   id: number;
   c8yUrl: string;
-  caId: number;
+  issuingCaId: number;
   cloudCaFingerprintPrimary: string;
   cloudCaFingerprintSecondary?: string | null;
+  useOsTrustAnchor: boolean;
 }
 export interface ThinEdgeConfiguration {
   id: number;
@@ -80,25 +131,6 @@ export interface TrustAnchorCertificate {
   crlDistributionUrl: string | null;
 }
 
-export interface DevityCertificateData {
-  acmeDirectory: string;
-  algorithm: string;
-  caId: number;
-  caName: string;
-  certificate: string;
-  csr: string | null;
-  defaultCertificateTemplateId: number;
-  expirationTime: string; // ISO 8601 format timestamp
-  fingerprint: string;
-  isEnterprise: boolean;
-  issuerCaFingerprint: string;
-  issuerCn: string;
-  pkiPath: string;
-  protected: boolean;
-  subjectCn: string;
-  subOrganization: string;
-}
-
 export interface IssuingCA {
   id: number;
   caName: string;
@@ -108,7 +140,7 @@ export interface IssuingCA {
   pkiPath: string;
   defaultCertificateTemplateId: number;
   hidden: boolean;
-  acmeDirectory: string;
+  caCertificate?: CaCertificateDto;
 }
 
 export const DevityCertificateStatus = {
@@ -187,4 +219,20 @@ export interface CertificateAuthorityCreate {
   certificate: string;
   csr: string | null;
   pkiPath: string;
+}
+
+export interface Permission {
+  iamGroupId: string;
+  resourceRoles: {
+    resource: {
+      id: string;
+      entityId: string;
+    };
+    roles: Role[];
+  }[];
+}
+export interface Role {
+  roleId: string;
+  roleName: string;
+  description: string;
 }

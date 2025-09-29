@@ -21,7 +21,7 @@ export default {
       {
         name: 'Devity SPS Administration',
         module: 'DevityAdminModule',
-        path: './src/app/plugin/devity-administration.module.ts',
+        path: './src/app/widget/devity-administration.module.ts',
         description: 'Devity Administration Plugin for SPS 2024 🚀',
       },
     ],
