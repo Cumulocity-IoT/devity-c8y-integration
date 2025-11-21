@@ -99,12 +99,13 @@ export class DevityCertificateAuthorityListComponent {
       this.provider = await this.keynoaService.getProvider(this._providerId);
       const caId = this.provider.caId;
       const cas = await this.proxyService.getCertificateAuthorities();
-      const cert = cas.find((ca) => ca.id === caId);
+      const certs = cas.map((ca) => ({ ...ca, ...ca.caCertificate ?? {} }));
+      const cert = certs.find((ca) => ca.id === caId);
       if (cert) {
         this.rows = [cert];
       } else {
         // TODO: remove this fallback before fair!!
-        this.rows = cas.map((cert) => ({ ...cert }));
+        this.rows = certs;
       }
     } catch (e) {
       this.alert.danger('Could not load CAs.', `${e}`);

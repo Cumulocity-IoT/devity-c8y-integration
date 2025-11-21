@@ -32,6 +32,11 @@
             <label for="ca_name" translate>Name</label>
             <input id="ca_name" class="form-control" name="name" formControlName="caName" />
           </div>
+
+          <div class="form-group">
+            <label for="thin_edge_name" translate>Thin-Edge template name</label>
+            <input id="thin_edge_name" class="form-control" name="name" formControlName="thinEdgeName" />
+          </div>
         }
         @case (1) {
           <formly-form [form]="formlyStep2" [fields]="step2Fields" [model]="step2Model"></formly-form>
@@ -43,9 +48,20 @@
           <formly-form [form]="formlyStep3" [fields]="step3Fields" [model]="step3Model"></formly-form>
         }
         @case (3) {
-          <div class="form-group flex-grow">
-            <label for="pattern" translate>Device Selector Patterns</label>
-            <input type="text" id="pattern" class="form-control" formControlName="pattern">
+          <!-- Add dropdown with different values, ala MODEL,  -->
+          <div class="form-inline">
+
+            <label for="pattern" translate>Selector Patterns</label>
+            <div class="form-group m-l-8">
+              <c8y-select
+                id="patternType"
+                [items]="DEVICE_SELECTOR_PATTERN_OPTIONS"
+                [selected]="'MODEL'"
+                formControlName="patternType"></c8y-select>
+            </div>
+            <div class="form-group">
+              <input type="text" id="pattern" class="form-control" formControlName="pattern" placeholder="*">
+            </div>
           </div>
         }
       }

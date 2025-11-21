@@ -226,7 +226,9 @@ export class DevityProxyService {
       headers: { Accept: 'application/json' },
       body: authority,
     };
-    return this.proxy<CertificateAuthorityCreate>(request);
+    return this.proxy<{ issuingCA: CertificateAuthorityCreate }>(request).then(
+      (res) => res.issuingCA
+    );
   }
 
   getPermissions(groupId = 'cumulocity') {
@@ -243,15 +245,18 @@ export class DevityProxyService {
     const request: ProxyRequest = {
       url: `/rbac/userGroups/${groupId}`,
       method: 'PUT',
-      headers: { Accept: 'application/json' },
-      body: { resourceRoleIds: roles },
+      headers: {
+        Accept: 'application/json',
+      },
+      body: { resourceRoleIds: roles.map((roleId) => +roleId) },
     };
     return this.proxy<Permission>(request);
   }
 
   getRolesForCA(id: IssuingCA['id']) {
     const request: ProxyRequest = {
-      url: `/rbac/resourceRoles?entityName="issuingCA"?entityId=${id}`,
+      // TODO: will be renamed from entityName to entityType
+      url: `/rbac/resourceRoles?entityName=issuingCA&entityId=${id}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -303,7 +308,7 @@ export class DevityProxyService {
     configId: ThinEdgeConfiguration['id'];
     configType: string;
     weight: number;
-    patterns: { MODEL: string };
+    patterns: { [key: string]: string };
   }) {
     const request: ProxyRequest = {
       url: `/deviceSelectors`,

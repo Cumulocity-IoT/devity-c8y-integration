@@ -91,11 +91,13 @@ export interface DevityDeviceApp {
 
 export interface CumulocityConfiguration {
   id: number;
+  connectorName: string;
   c8yUrl: string;
   issuingCaId: number;
-  cloudCaFingerprintPrimary: string;
+  cloudCaFingerprintPrimary?: string;
   cloudCaFingerprintSecondary?: string | null;
   useOsTrustAnchor: boolean;
+  cloudWebUiLink: string;
 }
 export interface ThinEdgeConfiguration {
   id: number;
@@ -154,7 +156,7 @@ export type DevityCertificateStatus =
 
 export interface CertificateAuthorityConfig {
   caType: string; // e.g., "INTERNAL"
-  rootTTl: string; // e.g., "87600h"
+  rootTTL: string; // e.g., "87600h"
   intermediateTTL: string; // e.g., "43800h"
   keyType: string; // e.g., "RSA"
   keyBits: number; // e.g., 4096
