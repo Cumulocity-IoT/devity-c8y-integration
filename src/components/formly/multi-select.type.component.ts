@@ -19,5 +19,6 @@ import { FieldType } from '@ngx-formly/core';
       </select>
     </div>
   `,
+  standalone: false
 })
 export class FormlyFieldMultiSelect extends FieldType {}

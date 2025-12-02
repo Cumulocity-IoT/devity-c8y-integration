@@ -9,10 +9,10 @@ import {
 import { flatten, remove } from 'lodash';
 import { CERTIFIACTE_LIST_COLUMNS } from '~models/certificate.model';
 import {
-  DevityCertificateData,
   DevityCertificateStatus,
   DevityDevice,
   DevityDeviceCertificate,
+  IssuingCA,
 } from '~models/rest-reponse.model';
 import { CertificateActionService } from '~services/certificate-action.service';
 import { DevityProxyService } from '~services/devity-proxy.service';
@@ -38,6 +38,7 @@ interface CertificateStats {
   selector: 'certificate-list',
   templateUrl: './certificate-list.component.html',
   styleUrl: './certificate-list.component.scss',
+  standalone: false,
 })
 export class CertificateListComponent implements OnInit {
   isLoading = true;
@@ -60,15 +61,16 @@ export class CertificateListComponent implements OnInit {
       showIf: (row) => row.status === DevityCertificateStatus.VALID,
       callback: (row) => this.revoke(row),
     },
-    {
-      type: 'renew',
-      text: 'Renew Certificate',
-      icon: 'refresh',
-      iconClasses: 'text-success',
-      // showOnHover: true,
-      showIf: (row) => row.status === DevityCertificateStatus.EXPIRED,
-      callback: (row) => this.renew(row),
-    },
+    // TODO: should be removed
+    // {
+    //   type: 'renew',
+    //   text: 'Renew Certificate',
+    //   icon: 'refresh',
+    //   iconClasses: 'text-success',
+    //   // showOnHover: true,
+    //   showIf: (row) => row.status === DevityCertificateStatus.EXPIRED,
+    //   callback: (row) => this.renew(row),
+    // },
   ];
 
   // certificate stats
@@ -79,7 +81,7 @@ export class CertificateListComponent implements OnInit {
   private devityDevices: DevityDevice[];
   private unionDevices: UnionDevice[];
   private certificates: DevityDeviceCertificate[];
-  private authorities: DevityCertificateData[];
+  private authorities: IssuingCA[];
 
   constructor(
     private inventoryService: InventoryService,
@@ -110,17 +112,16 @@ export class CertificateListComponent implements OnInit {
     this.rows = this.generateRows();
     this.isLoading = false;
 
-    this.stats = await this.fetchStats(),
-
-    console.log('reload', {
-      c8yDevices: this.c8yDevices,
-      devityDevices: this.devityDevices,
-      unionDevices: this.unionDevices,
-      certificates: this.certificates,
-      authorities: this.authorities,
-      rows: this.rows,
-      stats: this.stats,
-    });
+    (this.stats = await this.fetchStats()),
+      console.log('reload', {
+        c8yDevices: this.c8yDevices,
+        devityDevices: this.devityDevices,
+        unionDevices: this.unionDevices,
+        certificates: this.certificates,
+        authorities: this.authorities,
+        rows: this.rows,
+        stats: this.stats,
+      });
 
     this.lastUpdated = new Date();
     this.isStatsLoading = false;
@@ -172,7 +173,10 @@ export class CertificateListComponent implements OnInit {
 
     unionDevices.forEach((device) => {
       requests.push(
-        this.devityProxyService.getCertificates(device.devity.guid)
+        this.devityProxyService.getCertificates(
+          device.devity.guid,
+          'thin-edge1'
+        )
       );
       deviceList[device.devity.guid] = device;
     });
@@ -208,15 +212,23 @@ export class CertificateListComponent implements OnInit {
     };
     const requests = [];
 
-    authorities.forEach((auth) =>
+    for (const auth of authorities) {
+      if (!auth.caCertificate?.fingerprint) {
+        console.warn(
+          `Authority ${auth.caName} has no CA certificate assigned. Skipping...`
+        );
+        continue;
+      }
+
+      const fingerprint = auth.caCertificate?.fingerprint;
       requests.push(
-        this.devityProxyService.getValidCertificates(auth.fingerprint),    // 0
-        this.devityProxyService.getExpiringCertificates(auth.fingerprint, 2), // 1
-        this.devityProxyService.getExpiringCertificates(auth.fingerprint, 7), // 2
-        this.devityProxyService.getExpiredCertificates(auth.fingerprint, 7),  // 3
-        this.devityProxyService.getRevokedCertificates(auth.fingerprint, 7)   // 4
-      )
-    );
+        this.devityProxyService.getValidCertificates(fingerprint), // 0
+        this.devityProxyService.getExpiringCertificates(fingerprint, 2), // 1
+        this.devityProxyService.getExpiringCertificates(fingerprint, 7), // 2
+        this.devityProxyService.getExpiredCertificates(fingerprint, 7), // 3
+        this.devityProxyService.getRevokedCertificates(fingerprint, 7) // 4
+      );
+    }
 
     try {
       const responses = await Promise.all(requests);
@@ -278,7 +290,7 @@ export class CertificateListComponent implements OnInit {
   ): Row[] {
     let row: Row;
     let device: UnionDevice;
-    let authority: DevityCertificateData;
+    let authority: IssuingCA;
 
     return certificates.map((certificate) => {
       // minimal row data set (& reset)
@@ -290,7 +302,7 @@ export class CertificateListComponent implements OnInit {
 
       // find related data
       authority = this.authorities.find(
-        (auth) => auth.fingerprint === certificate.caFingerprint
+        (auth) => auth.caCertificate?.fingerprint === certificate.caFingerprint
       );
       device = unionDevices.find(
         (device) => device.devity.guid === certificate.deviceGuid
@@ -301,8 +313,8 @@ export class CertificateListComponent implements OnInit {
         ...row,
         ...{
           device,
-          authoritySubjectCn: authority?.subjectCn,
-          issuingCaId: authority?.caId,
+          authoritySubjectCn: authority?.caCertificate?.subjectCn,
+          issuingCaId: authority?.id,
         },
       } as Row;
     });

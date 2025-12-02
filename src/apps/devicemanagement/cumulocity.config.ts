@@ -21,7 +21,7 @@ export default {
       {
         name: 'Devity Device Management',
         module: 'DevityDeviceManagementModule',
-        path: './src/app/plugin/devity-device-management.module.ts',
+        path: './src/app/widget/devity-device-management.module.ts',
         description: 'Devity Device Management Plugin for SPS 2024 🚀',
       },
     ],
@@ -42,7 +42,7 @@ export default {
       '@c8y/ngx-components',
       'ngx-bootstrap',
       '@ngx-translate/core',
-      '@ngx-formly/core',
-    ],
+      '@ngx-formly/core'
+    ]
   },
 } as const satisfies ConfigurationOptions;

@@ -7,7 +7,7 @@ import {
 } from '@c8y/ngx-components';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { DevityProxyService } from './devity-proxy.service';
-import { CertificateMoveModalComponent } from '~apps/devicemanagement/src/app/plugin/components/certificate-move-modal/certificate-move-modal.component';
+import { CertificateMoveModalComponent } from '~apps/devicemanagement/src/app/widget/components/certificate-move-modal/certificate-move-modal.component';
 import { firstValueFrom } from 'rxjs';
 import { DevityDevice, DevityDeviceApp } from '~models/rest-reponse.model';
 
@@ -41,12 +41,12 @@ export class CertificateActionService {
       );
 
       try {
-        const ca = await this.devityProxyService.getIssuingCA(issuingCaId);
+        const ca = await this.devityProxyService.getIssuingCAByCaCertificateId(issuingCaId);
+        // assumption is that rotation of crl happens automatically
         await this.devityProxyService.revokeCertificate(
           ca.id,
           certificateSerialNumber
         );
-        await this.devityProxyService.rotateIssuingCa(ca.id);
         this.alertService.success(
           `Certificate ${certificateSerialNumber} revoked. It might take several minutes for the action to be completed.`
         );

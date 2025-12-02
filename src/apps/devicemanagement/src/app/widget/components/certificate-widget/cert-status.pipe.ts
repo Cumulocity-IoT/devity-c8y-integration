@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'certIcon'
+  name: 'certIcon',
+  standalone: false
 })
 export class CertificateIconPipe implements PipeTransform {
 
@@ -30,7 +31,8 @@ export class CertificateIconPipe implements PipeTransform {
 }
 
 @Pipe({
-    name: 'certStatus'
+    name: 'certStatus',
+    standalone: false
   })
   export class CertificateStatusPipe implements PipeTransform {
   

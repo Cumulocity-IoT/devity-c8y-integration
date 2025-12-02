@@ -18,7 +18,7 @@ export class FormlyHelperService {
   ): CertificateAuthorityConfig | undefined {
     const payload: CertificateAuthorityConfig = {
       caType: 'INTERNAL',
-      rootTTl: this.toDuration(model.rootCaTTL, model.rootTimeUnit),
+      rootTTL: this.toDuration(model.rootCaTTL, model.rootTimeUnit),
       intermediateTTL: this.toDuration(
         model.intermediateCaTTL,
         model.intermediateTimeUnit

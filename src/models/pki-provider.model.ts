@@ -10,4 +10,5 @@ export interface PKIProvider extends IManagedObject {
   c8yConfigId?: number;
   certTemplateId?: number;
   thinEdgeConfigId?: number;
+  thinEdgeName?: string;
 }

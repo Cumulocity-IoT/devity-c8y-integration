@@ -5,11 +5,12 @@ import {
   CertificateAuthorityCreate,
   CertificateTemplate,
   CumulocityConfiguration,
-  DevityCertificateData,
   DevityDevice,
   DevityDeviceApp,
   DevityDeviceCertificate,
   IssuingCA,
+  Permission,
+  Role,
   ThinEdgeConfiguration,
   TrustAnchorCertificate,
 } from '~models/rest-reponse.model';
@@ -61,9 +62,20 @@ export class DevityProxyService {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: null
+      body: null,
     };
     return this.proxy(request);
+  }
+
+  getIssuingCA(issuingCaId: number) {
+    const url = `/issuingCAs/${issuingCaId}`;
+    const request: ProxyRequest = {
+      url,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<IssuingCA>(request);
   }
 
   renewDevice(guid: DevityDevice['guid']) {
@@ -109,9 +121,12 @@ export class DevityProxyService {
     return this.proxy<DevityDevice[]>(request);
   }
 
-  getCertificates(guid: DevityDevice['guid']) {
+  getCertificates(
+    guid: DevityDevice['guid'],
+    appInstanceId: DevityDeviceApp['appInstanceId']
+  ) {
     const request: ProxyRequest = {
-      url: `/appCertificates?guid=${guid}`,
+      url: `/deviceCertificates?guid=${guid}&appInstanceId=${appInstanceId}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -120,11 +135,11 @@ export class DevityProxyService {
   }
 
   getExpiringCertificates(
-    caFingerprint: DevityCertificateData['fingerprint'],
+    caFingerprint: CaCertificateDto['fingerprint'],
     days: number
   ) {
     const request: ProxyRequest = {
-      url: `/appCertificates/expiring?caFingerprint=${caFingerprint}&daysAmount=${days}`,
+      url: `/deviceCertificates/expiring?caFingerprint=${caFingerprint}&daysAmount=${days}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -133,11 +148,11 @@ export class DevityProxyService {
   }
 
   getExpiredCertificates(
-    caFingerprint: DevityCertificateData['fingerprint'],
+    caFingerprint: CaCertificateDto['fingerprint'],
     days: number
   ) {
     const request: ProxyRequest = {
-      url: `/appCertificates/expired?caFingerprint=${caFingerprint}&daysAmount=${days}`,
+      url: `/deviceCertificates/expired?caFingerprint=${caFingerprint}&daysAmount=${days}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -146,11 +161,11 @@ export class DevityProxyService {
   }
 
   getRevokedCertificates(
-    caFingerprint: DevityCertificateData['fingerprint'],
+    caFingerprint: CaCertificateDto['fingerprint'],
     days: number
   ) {
     const request: ProxyRequest = {
-      url: `/appCertificates/revoked?caFingerprint=${caFingerprint}&daysAmount=${days}`,
+      url: `/deviceCertificates/revoked?caFingerprint=${caFingerprint}&daysAmount=${days}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -158,9 +173,9 @@ export class DevityProxyService {
     return this.proxy<DevityDeviceCertificate[]>(request);
   }
 
-  getValidCertificates(caFingerprint: DevityCertificateData['fingerprint']) {
+  getValidCertificates(caFingerprint: CaCertificateDto['fingerprint']) {
     const request: ProxyRequest = {
-      url: `/appCertificates/valid?caFingerprint=${caFingerprint}`,
+      url: `/deviceCertificates/valid?caFingerprint=${caFingerprint}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -170,27 +185,30 @@ export class DevityProxyService {
 
   getCertificateAuthorities() {
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/listCA`,
+      url: `/issuingCAs`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
     };
-    return this.proxy<DevityCertificateData[]>(request);
+    return this.proxy<IssuingCA[]>(request);
   }
 
-  getIssuingCA(caCertificateId: number) {
+  getIssuingCAByCaCertificateId(caCertificateId: number) {
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/${caCertificateId}/issuingCa`,
+      url: `/issuingCAs?caCertificateId=${caCertificateId}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
     };
-    return this.proxy<IssuingCA>(request);
+    return this.proxy<IssuingCA[]>(request).then((cas) => cas[0]);
   }
 
-  getCertificateAuthority(caId: CumulocityConfiguration['caId']) {
+  async getCertificateAuthority(
+    issuingCaId: CumulocityConfiguration['issuingCaId']
+  ) {
+    const ca = await this.getIssuingCA(issuingCaId);
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/trustanchors/id/${caId}`,
+      url: `/trustAnchors/${ca.caCertificateId}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
@@ -200,20 +218,55 @@ export class DevityProxyService {
 
   createCertificateAuthority(
     caName: string,
-    authoritiy: CertificateAuthorityConfig
+    authority: CertificateAuthorityConfig
   ) {
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/${caName}`,
+      url: `/issuingCAs/${caName}`,
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: authoritiy,
+      body: authority,
     };
-    return this.proxy<CertificateAuthorityCreate>(request);
+    return this.proxy<{ issuingCA: CertificateAuthorityCreate }>(request).then(
+      (res) => res.issuingCA
+    );
   }
 
-  deleteCertificateAuthority(caCertificateId: number) {
+  getPermissions(groupId = 'cumulocity') {
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/${caCertificateId}`,
+      url: `/rbac/userGroups/${groupId}`,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<Permission>(request);
+  }
+
+  setPermissions(roles: Role['roleId'][], groupId = 'cumulocity') {
+    const request: ProxyRequest = {
+      url: `/rbac/userGroups/${groupId}`,
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: { resourceRoleIds: roles.map((roleId) => +roleId) },
+    };
+    return this.proxy<Permission>(request);
+  }
+
+  getRolesForCA(id: IssuingCA['id']) {
+    const request: ProxyRequest = {
+      // TODO: will be renamed from entityName to entityType
+      url: `/rbac/resourceRoles?entityName=issuingCA&entityId=${id}`,
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy<Role[]>(request);
+  }
+
+  deleteCertificateAuthority(id: number) {
+    const request: ProxyRequest = {
+      url: `/issuingCAs/${id}`,
       method: 'DELETE',
       headers: { Accept: 'application/json' },
       body: null,
@@ -243,19 +296,19 @@ export class DevityProxyService {
 
   deleteThinEdgeConfig(id: ThinEdgeConfiguration['id']) {
     const request: ProxyRequest = {
-        url: `/thinEdgeConfigurations/${id}`,
-        method: 'DELETE',
-        headers: { Accept: 'application/json' },
-        body: null,
-      };
-      return this.proxy(request);
+      url: `/thinEdgeConfigurations/${id}`,
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy(request);
   }
 
   createDeviceSelector(deviceSelector: {
     configId: ThinEdgeConfiguration['id'];
     configType: string;
     weight: number;
-    patterns: { MODEL: string };
+    patterns: { [key: string]: string };
   }) {
     const request: ProxyRequest = {
       url: `/deviceSelectors`,
@@ -298,12 +351,12 @@ export class DevityProxyService {
 
   deleteCumulocityConfig(id: CumulocityConfiguration['id']) {
     const request: ProxyRequest = {
-        url: `/cumulocityConfigurations/${id}`,
-        method: 'DELETE',
-        headers: { Accept: 'application/json' },
-        body: null,
-      };
-      return this.proxy(request);
+      url: `/cumulocityConfigurations/${id}`,
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+      body: null,
+    };
+    return this.proxy(request);
   }
 
   getCumulocityConfig(
@@ -328,16 +381,16 @@ export class DevityProxyService {
     return this.proxy<CertificateTemplate>(request);
   }
 
-  getTrustAnchor(
+  getTrustAnchors(
     cloudCaFingerprintPrimary: CumulocityConfiguration['cloudCaFingerprintPrimary']
   ) {
     const request: ProxyRequest = {
-      url: `/certificateAuthorities/trustanchors/fingerprint/${cloudCaFingerprintPrimary}`,
+      url: `/trustAnchors?fingerprint=${cloudCaFingerprintPrimary}`,
       method: 'GET',
       headers: { Accept: 'application/json' },
       body: null,
     };
-    return this.proxy<TrustAnchorCertificate>(request);
+    return this.proxy<TrustAnchorCertificate[]>(request);
   }
 
   private proxy<T>(request: ProxyRequest): Promise<T> {

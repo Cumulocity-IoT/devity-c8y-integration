@@ -29,7 +29,10 @@
             "tsConfig": "src/apps/administration/tsconfig.app.json",
             "inlineStyleLanguage": "less",
             "assets": [
-              "src/apps/administration/src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
               "src/apps/administration/src/assets"
             ],
             "styles": ["src/apps/administration/src/styles.less"],
@@ -91,7 +94,13 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "less",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              "src/assets"
+            ],
             "styles": ["src/styles.less"],
             "scripts": []
           }
@@ -138,7 +147,13 @@
             "polyfills": ["zone.js"],
             "tsConfig": "src/apps/devicemanagement/tsconfig.app.json",
             "inlineStyleLanguage": "less",
-            "assets": ["src/apps/devicemanagement/src/favicon.ico", "src/apps/devicemanagement/src/assets"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              "src/apps/devicemanagement/src/assets"
+            ],
             "styles": ["src/apps/devicemanagement/src/styles.less"],
             "scripts": [],
             "aot": false,
@@ -198,7 +213,13 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "less",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              "src/assets"
+            ],
             "styles": ["src/styles.less"],
             "scripts": []
           }

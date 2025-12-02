@@ -80,7 +80,7 @@ export const Step2FormlyFieldConfig: FormlyFieldConfig[] = [
   {
     key: 'algorithm',
     type: 'select',
-    defaultValue: 'RSA-4096',
+    defaultValue: 'EC-384',
     templateOptions: {
       label: 'Algorithm',
       description: 'The cryptographic algorithm to use.',
@@ -387,7 +387,7 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
                 className: 'col-md-6 p-l-0',
                 key: 'keyAlgorithm',
                 type: 'select',
-                defaultValue: 'RSA-4096',
+                defaultValue: 'EC-256',
                 templateOptions: {
                   label: 'Key Algorithm',
                   description: 'The cryptographic algorithm to use.',
@@ -405,7 +405,7 @@ export const Step3FormlyFieldConfig: FormlyFieldConfig[] = [
                 className: 'col-md-6 p-r-0',
                 key: 'signAlgorithm',
                 type: 'select',
-                defaultValue: 'SHA256',
+                defaultValue: 'SHA384',
                 templateOptions: {
                   label: 'Signature Algorithm',
                   description: 'The signature algorithm to use.',
