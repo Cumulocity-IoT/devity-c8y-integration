@@ -68,6 +68,7 @@ export class DevityCertificateAuthorityModalComponent {
     // step4
     new FormGroup({
       pattern: new FormControl('', [Validators.required]),
+      patternType: new FormControl('MODEL', [Validators.required]),
     }),
   ];
   stepTitles = [
