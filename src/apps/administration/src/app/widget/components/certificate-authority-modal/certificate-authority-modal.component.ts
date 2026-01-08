@@ -68,7 +68,7 @@ export class DevityCertificateAuthorityModalComponent {
     // step4
     new FormGroup({
       pattern: new FormControl('', [Validators.required]),
-      patternType: new FormControl('MODEL', [Validators.required]),
+      patternType: new FormControl({ label: 'Model', value: 'MODEL' }, [Validators.required]),
     }),
   ];
   stepTitles = [
@@ -156,7 +156,7 @@ export class DevityCertificateAuthorityModalComponent {
         ...this.step3Model,
       });
       const pattern = this.form[3].get('pattern').value;
-      const patternType = this.form[3].get('patternType').value;
+      const patternType = this.form[3].get('patternType').value?.value;
       if (isNil(caName) || isNil(pattern) || isNil(patternType)) {
         this.alert.warning('Cancelled submit as form incomplete.');
         return;
